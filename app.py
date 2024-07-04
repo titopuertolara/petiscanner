@@ -47,7 +47,7 @@ def get_data(contents,filename):
         #loader = PyPDFLoader(pdf_buffer)
         reader = PdfReader(pdf_buffer)
         #
-        print(dir(reader))
+        #print(dir(reader))
         page = reader.pages[20]
         print(reader.get_num_pages())
         #print(page.extract_text())
