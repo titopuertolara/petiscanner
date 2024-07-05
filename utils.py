@@ -31,16 +31,18 @@ def get_vulnerability(match_word,date_ini,date_end):
         output=[{'contributor':vulnerability['cve']['sourceIdentifier'],\
                 'description':vulnerability['cve']['descriptions'],\
                 'date':vulnerability['cve']['published']} for vulnerability in res2['vulnerabilities']]
+        msg=True
     except:
-        output=[]            
-    return output
+        output=[]
+        msg=False    
+    return output,msg
 
 def get_vulnerability_dataframe(keyword):
     today=date.today().isoformat()
     one_month_ago=(date.today() - timedelta(days=30)).isoformat()
     date_ini=one_month_ago+'T00:00:00.000'
     date_end=today+'T00:00:00.000'
-    vul=get_vulnerability(keyword,date_ini,date_end)
+    vul,msg=get_vulnerability(keyword,date_ini,date_end)
     if len(vul)>0:
         vul=vul[::-1]
         vuln_df=pd.DataFrame()
@@ -52,11 +54,11 @@ def get_vulnerability_dataframe(keyword):
                 final_des=des['value']
             vuln_df.loc[i,'Fecha']=v['date']
             vuln_df.loc[i,'Autor']=v['contributor']
-            vuln_df.loc[i,'Descripción']=final_des
+            vuln_df.loc[i,'Vulnerabilidad']=final_des
         vuln_df['Herramienta']=keyword
-        return vuln_df
+        return vuln_df,msg
     else:
-        return pd.DataFrame()
+        return pd.DataFrame(),msg
 
 
 
