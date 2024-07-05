@@ -232,8 +232,8 @@ def scan_doc(nclicks,big_str):
         vulnerabilities_list=[]
         
         true_counts=0
-        for tool in tools_found:
-            fsc1.set("tools",f'Consultando {tool} ..')
+        for k ,tool in enumerate(tools_found):
+            fsc1.set("tools",f'Consultando {tool} ({k+1}/{len(tools_found)})..')
             df,msg=get_vulnerability_dataframe(tool.strip())
             print(tool,msg)
             if df.shape[0]>0:
@@ -275,7 +275,7 @@ def scan_doc(nclicks,big_str):
                         yanchor='top',
                         y=0.99,
                         xanchor='right',
-                        x=0.9
+                        x=0.95
 
 
                     ))
