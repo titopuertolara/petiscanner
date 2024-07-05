@@ -7,6 +7,7 @@ from dash import dash_table
 from PIL import Image
 from wordcloud import WordCloud,ImageColorGenerator
 from io import BytesIO
+import base64
 
 
 def word_finder(word,text):
@@ -89,12 +90,18 @@ def create_datatable(df):
     return datatable
 
 def get_wordcloud(text):
-    wordcloud = WordCloud(background_color="white",colormap='Oranges').generate(text)
+    wordcloud = WordCloud(background_color="white",colormap='Oranges',width=640,height=480).generate(text)
     img=wordcloud.to_image()
     img_bytes = BytesIO()
     img.save(img_bytes, format='PNG')
     img_object='data:image/png;base64,{}'.format(base64.b64encode(img_bytes.getvalue()).decode())
     return img_object
+
+def remove_stopwords(main_text,stopwords):
+
+    words_list=main_text.split()
+    words_list=[i.strip() for i in words_list]
+    return ' '.join([i for i in words_list if i not in stopwords ])
     
     
 

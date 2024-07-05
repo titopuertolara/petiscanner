@@ -15,7 +15,6 @@ import plotly.graph_objects as go
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
 ref_tools=pd.read_csv('reference_tools.csv')
 tools_list=ref_tools['software'].to_list()
 fsc = FileSystemCache("cache_dir")
@@ -23,7 +22,37 @@ fsc1= FileSystemCache("cache_tools")
 fsc.set("progress", '0')
 fsc1.set("tools",'idle')
 #print(tools_list)
-
+'''
+app.layout = html.Div([
+    dcc.Upload(
+        id='upload-data',
+        children=html.Div([
+            'Drag and Drop or ',
+            html.A('Select Files')
+        ]),
+        style={
+            'width': '100%',
+            'height': '60px',
+            'lineHeight': '60px',
+            'borderWidth': '1px',
+            'borderStyle': 'dashed',
+            'borderRadius': '5px',
+            'textAlign': 'center',
+            'margin': '10px'
+        },
+                
+    ),
+    html.Div(id='output-data-upload'),
+    html.Progress(id='loadbar',max=100),
+    html.Br(),
+    html.Button('Scan',id='scanner-button',n_clicks=0),
+    html.Div(id='msg-div'),
+    html.Div(id='tool-div'),
+    html.Div(id='vulnerabilities-div'),
+    dcc.Store(id='pdf_content'),
+    dcc.Interval(id='check-bar-interval',interval=500,n_intervals=0)
+])
+'''
 with open("spanish.txt","r") as sfile:
     stopwords=sfile.readlines()
 stopwords=[i.replace('\n','') for i in stopwords]
@@ -32,41 +61,13 @@ stopwords.append('la')
 stopwords.append('los')
 stopwords.append('en')
 
-colors = {
-    'background': '#73D0B3',
-    'header_background': '#00B08B',
-    'header_text': 'white',
-    'text': '#2C3E50',
-    'link': 'white',
-    'link2': '#00B08B',
-    'upload_background': 'white',
-    'button_background': '#FF3843',
-    'button_text': 'white',
-    'div_background': 'white',
-    'progress_bar': '#00B08B'
-}
-
-app.layout = html.Div([
+app.layout =html.Div([
     # Header
     html.Div([
-        
-        html.Div([
-        html.Div([
-            html.H1("OSV Scanner", style={'color': colors['header_text'], 'marginRight': '10px', 'display': 'inline-block'}),
-            html.P("powered by"),
-            html.Img(src='/assets/logo.png', style={'height': '60px', 'verticalAlign': 'middle'})
-        ], style={'display': 'flex', 'alignItems': 'center','justifyContent': 'center',}),
+        html.H1("Vulnerability Scanner", style={'textAlign': 'center', 'color': '#2C3E50'}),
+        html.H5("Esta aplicación utiliza la API de la 'base de datos nacional de vulnerabilidades del gobierno de Estados Unidos de América' (https://nvd.nist.gov/)"),
         html.Hr()
-    ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
-        
-        html.H5([
-            "Esta aplicación utiliza la API de la ",
-            html.A('base de datos nacional de vulnerabilidades del gobierno de Estados Unidos de América', href='https://nvd.nist.gov/',target='_blank', style={'color': colors['link']}),
-            
-        ], style={'textAlign': 'center', 'color': colors['header_text']}),
-        html.P("El propósito de esta herramienta es ayudar a los gobiernos locales a identificar vulnerabilidades dentro de su infraestructura digital a través del PETI (plan estratégico de tecnologías de la información).", style={'textAlign': 'center', 'color': colors['header_text']}),
-        html.Hr()
-    ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
+    ], style={'padding': '10px', 'backgroundColor': '#ECF0F1'}),
 
     # File Upload Section
     html.Div([
@@ -74,7 +75,7 @@ app.layout = html.Div([
             id='upload-data',
             children=html.Div([
                 'Arrastre aquí el PDF o ',
-                html.A('Seleccione', style={'color': colors['link2'], 'textDecoration': 'underline'})
+                html.A('Seleccione', style={'color': '#3498DB', 'textDecoration': 'underline'})
             ]),
             style={
                 'width': '100%',
@@ -85,7 +86,7 @@ app.layout = html.Div([
                 'borderRadius': '10px',
                 'textAlign': 'center',
                 'margin': '20px 0',
-                'backgroundColor': colors['upload_background'],
+                'backgroundColor': '#F2F3F4',
                 'cursor': 'pointer'
             }
         )
@@ -96,13 +97,13 @@ app.layout = html.Div([
 
     # Progress Bar and Scan Button
     html.Div([
-        html.Progress(id='loadbar', max=100, style={'width': '100%', 'margin': '10px 0', 'color': colors['progress_bar']}),
+        html.Progress(id='loadbar', max=100, style={'width': '100%', 'margin': '10px 0'}),
         html.Br(),
         html.Button('Escanear', id='scanner-button', n_clicks=0, style={
             'width': '100%',
             
-            'backgroundColor': colors['button_background'],
-            'color': colors['button_text'],
+            'backgroundColor': '#3498DB',
+            'color': 'white',
             'border': 'none',
             'borderRadius': '5px',
             'cursor': 'pointer',
@@ -111,22 +112,23 @@ app.layout = html.Div([
     ], style={'textAlign': 'center'}),
 
     # Message and Tool Sections
-    html.Div(id='msg-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
-    html.Div(id='tool-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
+    html.Div(id='msg-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': '#F2F3F4', 'borderRadius': '5px'}),
+    html.Div(id='tool-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': '#F2F3F4', 'borderRadius': '5px'}),
 
     # Row for Word Cloud and Pie Chart Divs
     html.Div([
-        html.Div(id='wordcloud-image', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'}),
-        html.Div(id='pie-chart-div', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'})
+        html.Div(id='wordcloud-image', style={'flex': '1', 'padding': '10px', 'backgroundColor': '#F2F3F4', 'borderRadius': '5px', 'margin': '10px'}),
+        html.Div(id='pie-chart-div', style={'flex': '1', 'padding': '10px', 'backgroundColor': '#F2F3F4', 'borderRadius': '5px', 'margin': '10px'})
     ], style={'display': 'flex', 'flexDirection': 'row'}),
 
     # Vulnerabilities Div
-    html.Div(id='vulnerabilities-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
+    html.Div(id='vulnerabilities-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': '#F2F3F4', 'borderRadius': '5px'}),
 
     # Hidden Storage and Interval Component
     dcc.Store(id='pdf_content'),
     dcc.Interval(id='check-bar-interval', interval=500, n_intervals=0)
-], style={'fontFamily': 'Arial, sans-serif', 'backgroundColor': colors['background'], 'padding': '20px'})
+], style={'fontFamily': 'Arial, sans-serif', 'backgroundColor': '#ECF0F1', 'padding': '20px'})
+
 #this callback tracks which tool is being scanned during the process
 @app.callback(Output('tool-div','children'),
               [Input('check-bar-interval','n_intervals')])
