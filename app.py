@@ -181,6 +181,7 @@ def get_data(contents,filename):
             
             fsc.set("progress", f'{progress}')
         fsc.set("progress", '100')
+        fsc1.set("tools",f"El documento ya esta listo para ser escaneado.")
         print('loaded')
         return filename,[big_str]
 
@@ -201,7 +202,13 @@ def get_data(contents,filename):
 def scan_doc(nclicks,big_str):
     
     if ctx.triggered_id=='scanner-button':
-        #fsc.set("progress", '0')
+        progress_value=fsc.get("progress")
+        if float(progress_value)<100:
+            fsc1.set("tools",f"El documento no ha sido cargado.")
+            return '','','',''
+    
+            
+
         
         
         
