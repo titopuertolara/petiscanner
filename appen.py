@@ -62,11 +62,11 @@ app.layout = html.Div([
     ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
         
         html.H5(id='header-1',children=[
-            "Esta aplicación utiliza la API de la ",
-            html.A('base de datos nacional de vulnerabilidades del gobierno de Estados Unidos de América', href='https://nvd.nist.gov/',target='_blank', style={'color': colors['link']}),
+            "This App uses ",
+            html.A('National Vulnerability Database API', href='https://nvd.nist.gov/',target='_blank', style={'color': colors['link']}),
             
         ], style={'textAlign': 'center', 'color': colors['header_text']}),
-        html.P("El propósito de esta herramienta es ayudar a los gobiernos locales a identificar vulnerabilidades dentro de su infraestructura digital a través del PETI (plan estratégico de tecnologías de la información).", style={'textAlign': 'center', 'color': colors['header_text']}),
+        html.P("The main purpose of this tool is to help local governments to identify digital infrastructure vulnerabilities trough their official docs. ", style={'textAlign': 'center', 'color': colors['header_text']}),
         html.Hr()
     ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
 
@@ -75,8 +75,8 @@ app.layout = html.Div([
         dcc.Upload(
             id='upload-data',
             children=html.Div([
-                'Arrastre aquí el PDF o ',
-                html.A('Seleccione', style={'color': colors['link2'], 'textDecoration': 'underline'})
+                'Drag and drop PDF or ',
+                html.A('Select', style={'color': colors['link2'], 'textDecoration': 'underline'})
             ]),
             style={
                 'width': '100%',
@@ -100,7 +100,7 @@ app.layout = html.Div([
     html.Div([
         html.Progress(id='loadbar', max=100, style={'width': '100%', 'margin': '10px 0', 'color': colors['progress_bar']}),
         html.Br(),
-        html.Button('Escanear', id='scanner-button', n_clicks=0, style={
+        html.Button('Scan', id='scanner-button', n_clicks=0, style={
             'width': '100%',
             
             'backgroundColor': colors['button_background'],
@@ -186,7 +186,7 @@ def get_data(contents,filename):
             
             fsc.set("progress", f'{progress}')
         fsc.set("progress", '100')
-        fsc1.set("tools",f"El documento ya esta listo para ser escaneado.")
+        fsc1.set("tools",f"Document ready.")
         print('loaded')
         return filename,[big_str]
 
@@ -209,7 +209,7 @@ def scan_doc(nclicks,big_str):
     if ctx.triggered_id=='scanner-button':
         progress_value=fsc.get("progress")
         if float(progress_value)<100:
-            fsc1.set("tools",f"El documento no ha sido cargado.")
+            fsc1.set("tools",f"Document has not been loaded yet.")
             return '','','',''
     
             
@@ -238,43 +238,44 @@ def scan_doc(nclicks,big_str):
         
         true_counts=0
         for k ,tool in enumerate(tools_found):
-            fsc1.set("tools",f'Consultando {tool} ({k+1}/{len(tools_found)})..')
-            df,msg=get_vulnerability_dataframe(tool.strip())
+            fsc1.set("tools",f'Querying {tool} ({k+1}/{len(tools_found)})..')
+            df,msg=get_vulnerability_dataframe(tool.strip(),lang='en')
             print(tool,msg)
             if df.shape[0]>0:
                 vulnerabilities_list.append(df)
                 true_counts+=1
             if not msg:
-                fsc1.set("tools",f'Hubo un problema escaneando {tool} desde la NVD (consultar directamente desde la página oficial)')
+                fsc1.set("tools",f"There's an issue scanning {tool} from NVD (please search directly from main website)")
                 time.sleep(1)
                 
         if len(tools_found)>0:
             efficency=round(100*true_counts/len(tools_found),1)
             if efficency==0:
-                fsc1.set("tools",f"Se esta experimentando inestabilidad en la API, intente mas tarde.")
+                fsc1.set("tools",f"API is unstable, please try again later.")
 
             elif efficency<50:
-                fsc1.set("tools",f"Solo el {efficency}% de las solicitudes tuvo respuesta satisfactoria, podria escanear de nuevo (la API es inestable)")
+                fsc1.set("tools",f"Just {efficency}% of requests were succesful, wait 2 minutes and try scanning again.")
             else: 
-                fsc1.set("tools",f"Análisis Finalizado con un {efficency}% de consultas satisfactorias")
+                fsc1.set("tools",f"Finished with {efficency}% of succesful requests.")
         else:
-            fsc1.set("tools",f"No se encontraron herramientas para consultar")
+            fsc1.set("tools",f"Not tools found inside this document.")
 
 
         if len(vulnerabilities_list)>0:   
             all_vulnerabilities_df=pd.concat(vulnerabilities_list,ignore_index=True)
+            all_vulnerabilities_df=all_vulnerabilities_df.rename(columns={'Fecha':'Date','Autor':'Contributor','Vulnerabilidad':'Vulnerability','Herramienta':'Tool'})
             vul_data_table=create_datatable(all_vulnerabilities_df)
-            wordcloud_text=' '.join(all_vulnerabilities_df['Vulnerabilidad'].to_list()).lower()
+            wordcloud_text=' '.join(all_vulnerabilities_df['Vulnerability'].to_list()).lower()
             wordcloud_text=remove_stopwords(wordcloud_text,stopwords)
             wordcloud_image=get_wordcloud(wordcloud_text)
             wordcloud_plot=html.Img(src=wordcloud_image)
             print('pie chart')
-            tools_count=pd.DataFrame(all_vulnerabilities_df['Herramienta'].value_counts())
+            tools_count=pd.DataFrame(all_vulnerabilities_df['Tool'].value_counts())
             pie_fig=go.Figure()
             pie_fig.add_trace(go.Pie(labels=tools_count.index,values=tools_count['count'].values))
             pie_fig.update_traces(marker=dict(colors=colors_piechart))
             pie_fig.update_layout(
-                    title='Porcentaje de vulnerabilidades encontradas en el último mes',
+                    title="% of Vulnerabilities found in the last month.",
                     title_x=0.5,
                     legend=dict(
                         yanchor='top',
@@ -294,20 +295,18 @@ def scan_doc(nclicks,big_str):
             wordcloud_plot=''
             pie_chart=''
 
+        
         if len(tools_found)>0:
-            final_msg='Herramientas encontradas: '+','.join(tools_found)
+            final_msg='Tools Found: '+','.join(tools_found)
         else:
-            final_msg="No se encontaron herramientas en este documento."
-
-        
-        
+            final_msg="No tools were found."
 
 
 
         
 
         
-        return final_msg,vul_data_table,wordcloud_plot,pie_chart
+        return final_msg ,vul_data_table,wordcloud_plot,pie_chart
     return '','','',''
 if __name__ == '__main__':
     app.run(debug=True)

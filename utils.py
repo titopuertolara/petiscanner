@@ -37,7 +37,7 @@ def get_vulnerability(match_word,date_ini,date_end):
         msg=False    
     return output,msg
 
-def get_vulnerability_dataframe(keyword):
+def get_vulnerability_dataframe(keyword,lang='es'):
     today=date.today().isoformat()
     one_month_ago=(date.today() - timedelta(days=30)).isoformat()
     date_ini=one_month_ago+'T00:00:00.000'
@@ -48,7 +48,7 @@ def get_vulnerability_dataframe(keyword):
         vuln_df=pd.DataFrame()
         for i,v in enumerate(vul):
             for des in v['description']:
-                if des['lang']=='es':
+                if des['lang']==lang:
                     final_des=des['value']
                     break
                 final_des=des['value']
