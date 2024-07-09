@@ -26,13 +26,14 @@ fsc1.set("tools",'idle')
 colors_piechart=px.colors.qualitative.D3
 #print(tools_list)
 
-with open("spanish.txt","r") as sfile:
+with open("stopwords-en.txt","r") as sfile:
     stopwords=sfile.readlines()
 stopwords=[i.replace('\n','') for i in stopwords]
-stopwords.append('el')
-stopwords.append('la')
-stopwords.append('los')
-stopwords.append('en')
+#stopwords.append('el')
+#stopwords.append('la')
+#stopwords.append('los')
+#stopwords.append('en')
+#print(stopwords)
 
 colors = {
     'background': '#73D0B3',
@@ -123,6 +124,8 @@ app.layout = html.Div([
             html.Div(id='wordcloud-image', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'}),
             html.Div(id='pie-chart-div', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'})
         ], style={'display': 'flex', 'flexDirection': 'row'}),
+        #Normalized barplot
+        html.Div(id='normalized-barplot-div',style={'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'}),
         # Vulnerabilities Div
         html.Div(id='vulnerabilities-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
     ]),
@@ -202,6 +205,7 @@ def get_data(contents,filename):
               Output('vulnerabilities-div','children'),
               Output('wordcloud-image','children'),
               Output('pie-chart-div','children'),
+               Output('normalized-barplot-div','children'),
               [Input('scanner-button','n_clicks'),
                State('pdf_content','data')])
 def scan_doc(nclicks,big_str):
@@ -263,7 +267,10 @@ def scan_doc(nclicks,big_str):
 
         if len(vulnerabilities_list)>0:   
             all_vulnerabilities_df=pd.concat(vulnerabilities_list,ignore_index=True)
-            all_vulnerabilities_df=all_vulnerabilities_df.rename(columns={'Fecha':'Date','Autor':'Contributor','Vulnerabilidad':'Vulnerability','Herramienta':'Tool'})
+            all_vulnerabilities_df=all_vulnerabilities_df.rename(columns={'Fecha':'Date','Autor':'Contributor',\
+                                                                         'Vulnerabilidad':'Vulnerability',\
+                                                                         'Herramienta':'Tool',\
+                                                                         'Severidad':'Severity'})
             vul_data_table=create_datatable(all_vulnerabilities_df)
             wordcloud_text=' '.join(all_vulnerabilities_df['Vulnerability'].to_list()).lower()
             wordcloud_text=remove_stopwords(wordcloud_text,stopwords)
@@ -286,6 +293,27 @@ def scan_doc(nclicks,big_str):
 
                     ))
             pie_chart=dcc.Graph(figure=pie_fig)
+
+            # severity plot
+            severity_df=all_vulnerabilities_df[~all_vulnerabilities_df['Severity'].isnull()]
+
+            category_orders = {
+                'Severity': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
+            }
+
+            hist_fig=px.histogram(severity_df,x='Tool',\
+                 y=severity_df.index,\
+                 color='Severity',\
+                 barnorm='percent',text_auto=True,\
+                 #color_discrete_sequence=px.colors.qualitative.G10)
+                 color_discrete_sequence=['#FF6347', '#FFA500',  '#005B96','#87CEEB'],
+                 category_orders=category_orders)
+            hist_fig.update_traces(texttemplate='%{y:.2f}%')
+            hist_fig.update_yaxes(title="% of vulnerabilities")
+            hist_fig.update_layout(title='Vulnerabilities Severity',xaxis={'categoryorder':'total descending'})
+
+            hist_chart=dcc.Graph(figure=hist_fig)
+
             
             
 
@@ -294,6 +322,7 @@ def scan_doc(nclicks,big_str):
             vul_data_table=''
             wordcloud_plot=''
             pie_chart=''
+            hist_chart=''
 
         
         if len(tools_found)>0:
@@ -306,8 +335,8 @@ def scan_doc(nclicks,big_str):
         
 
         
-        return final_msg ,vul_data_table,wordcloud_plot,pie_chart
-    return '','','',''
+        return final_msg ,vul_data_table,wordcloud_plot,pie_chart,hist_chart
+    return '','','','',''
 if __name__ == '__main__':
     app.run(debug=True)
 
