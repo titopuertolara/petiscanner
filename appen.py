@@ -63,7 +63,7 @@ app.layout = html.Div([
     ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
         
         html.H5(id='header-1',children=[
-            "This App uses ",
+            "This App uses the ",
             html.A('National Vulnerability Database API', href='https://nvd.nist.gov/',target='_blank', style={'color': colors['link']}),
             
         ], style={'textAlign': 'center', 'color': colors['header_text']}),
@@ -209,7 +209,7 @@ def get_data(contents,filename):
               [Input('scanner-button','n_clicks'),
                State('pdf_content','data')])
 def scan_doc(nclicks,big_str):
-    
+    fsc1.set("tools","idle")
     if ctx.triggered_id=='scanner-button':
         progress_value=fsc.get("progress")
         if float(progress_value)<100:
@@ -300,7 +300,7 @@ def scan_doc(nclicks,big_str):
             category_orders = {
                 'Severity': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
             }
-
+            hist_fig=go.Figure()
             hist_fig=px.histogram(severity_df,x='Tool',\
                  y=severity_df.index,\
                  color='Severity',\

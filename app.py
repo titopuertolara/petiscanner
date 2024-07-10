@@ -209,7 +209,7 @@ def get_data(contents,filename):
               [Input('scanner-button','n_clicks'),
                State('pdf_content','data')])
 def scan_doc(nclicks,big_str):
-    
+    fsc1.set("tools","idle")
     if ctx.triggered_id=='scanner-button':
         progress_value=fsc.get("progress")
         if float(progress_value)<100:
@@ -296,7 +296,7 @@ def scan_doc(nclicks,big_str):
             category_orders = {
                 'Severidad': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
             }
-
+            hist_fig=go.Figure()
             hist_fig=px.histogram(severity_df,x='Herramienta',\
                  y=severity_df.index,\
                  color='Severidad',\
