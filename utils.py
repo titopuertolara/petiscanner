@@ -8,7 +8,7 @@ from PIL import Image
 from wordcloud import WordCloud,ImageColorGenerator
 from io import BytesIO
 import base64
-
+import re
 
 def word_finder(word,text):
 
@@ -144,7 +144,7 @@ def get_wordcloud(text):
     return img_object
 
 def remove_stopwords(main_text,stopwords):
-
+    main_text = re.sub(r'[^\w\s]', '', main_text)
     words_list=main_text.split()
     words_list=[i.strip() for i in words_list]
     return ' '.join([i for i in words_list if i not in stopwords ])

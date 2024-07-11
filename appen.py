@@ -274,6 +274,7 @@ def scan_doc(nclicks,big_str):
                                                                          'Severidad':'Severity'})
             vul_data_table=create_datatable(all_vulnerabilities_df)
             wordcloud_text=' '.join(all_vulnerabilities_df['Vulnerability'].to_list()).lower()
+            
             wordcloud_text=remove_stopwords(wordcloud_text,stopwords)
             wordcloud_image=get_wordcloud(wordcloud_text)
             wordcloud_plot=html.Img(src=wordcloud_image)
