@@ -296,9 +296,11 @@ def scan_doc(nclicks,big_str):
             pie_chart=dcc.Graph(figure=pie_fig)
 
             # severity plot
-            severity_df=all_vulnerabilities_df[~all_vulnerabilities_df['Severity'].isnull()]
+            #severity_df=all_vulnerabilities_df[~all_vulnerabilities_df['Severity'].isnull()]
+            severity_df=all_vulnerabilities_df.copy()
+            severity_df['Severity']=severity_df['Severity'].fillna('NOT SPECIFIED')
             severity_df=severity_df[severity_df['Tool'].isin(tools_found)]
-            print(severity_df['Tool'].value_counts())
+            #print(severity_df['Tool'].value_counts())
             
 
             # this kind of plot creates a bug where previous x axes is saved and plot isnot reseted
@@ -319,7 +321,8 @@ def scan_doc(nclicks,big_str):
             #hist_fig.update_layout(title='Vulnerabilities Severity',xaxis={'categoryorder':'total descending'})
 
             # TRYING TO FIX A BUGGED PLOT
-
+            
+            
             a=severity_df.groupby(['Tool','Severity']).count()[['Id']].reset_index()
             a=a.rename(columns={'Id':'Totalind'})
             b=a.groupby(['Tool']).sum()[['Totalind']].reset_index()
@@ -328,16 +331,18 @@ def scan_doc(nclicks,big_str):
             a['perc']=100*a['Totalind']/a['Total']
             a['perc']=a['perc'].apply(lambda x: round(x,1))
 
-            color_discrete_sequence={'CRITICAL':'#FF6347','HIGH':'#FFA500','LOW':'#87CEEB','MEDIUM':'#005B96'}
+            color_discrete_sequence={'CRITICAL':'#FF6347','HIGH':'#FFA500','LOW':'#87CEEB','MEDIUM':'#005B96','NOT SPECIFIED':'gray'}
             hist_fig=go.Figure()
             for sev in a['Severity'].unique():
                 dummy=a[a['Severity']==sev]
 
                 hist_fig.add_trace(go.Bar(x=dummy['Tool'],\
                                     y=dummy['perc'],\
-                                    name=sev,text=[f'{i}%' for i in dummy['perc']],\
+                                    name=sev,text=[f'{perc}% ({totalind})' for perc,totalind in zip(dummy['perc'],dummy['Totalind'])],\
                                     marker=dict(color=color_discrete_sequence[sev])))
-            hist_fig.update_layout(barmode="stack")
+            
+            
+            hist_fig.update_layout(barmode="stack",yaxis_range=[0,110])
             hist_fig.update_yaxes(title="% of vulnerabilities")
             hist_fig.update_layout(title='Vulnerabilities Severity')
             
