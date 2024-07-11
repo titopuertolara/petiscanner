@@ -255,7 +255,7 @@ def scan_doc(nclicks,big_str):
         if len(tools_found)>0:
             efficency=round(100*true_counts/len(tools_found),1)
             if efficency==0:
-                fsc1.set("tools",f"API is unstable, please try again later.")
+                fsc1.set("tools",f"API is unstable or there are not vulnerabilities for these tools in the last month, please try again later.")
 
             elif efficency<50:
                 fsc1.set("tools",f"Just {efficency}% of requests were succesful, wait 2 minutes and try scanning again.")
@@ -265,7 +265,8 @@ def scan_doc(nclicks,big_str):
             fsc1.set("tools",f"Not tools found inside this document.")
 
 
-        if len(vulnerabilities_list)>0:   
+        if len(vulnerabilities_list)>0:
+            all_vulnerabilities_df=pd.DataFrame()
             all_vulnerabilities_df=pd.concat(vulnerabilities_list,ignore_index=True)
             all_vulnerabilities_df=all_vulnerabilities_df.rename(columns={'Fecha':'Date','Autor':'Contributor',\
                                                                          'Vulnerabilidad':'Vulnerability',\
@@ -296,23 +297,54 @@ def scan_doc(nclicks,big_str):
 
             # severity plot
             severity_df=all_vulnerabilities_df[~all_vulnerabilities_df['Severity'].isnull()]
+            severity_df=severity_df[severity_df['Tool'].isin(tools_found)]
+            print(severity_df['Tool'].value_counts())
+            
 
-            category_orders = {
-                'Severity': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
-            }
+            # this kind of plot creates a bug where previous x axes is saved and plot isnot reseted
+            #category_orders = {
+            #    'Severity': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
+            #}
+            
+            #hist_fig=go.Figure()
+            #hist_fig=px.histogram(severity_df,x='Tool',\
+            #     y=severity_df.index,\
+            #     color='Severity',\
+            #     barnorm='percent',text_auto=True,\
+            #     #color_discrete_sequence=px.colors.qualitative.G10)
+            #     color_discrete_sequence=['#FF6347', '#FFA500',  '#005B96','#87CEEB'],
+            #     category_orders=category_orders)
+            #hist_fig.update_traces(texttemplate='%{y:.2f}%')
+            #hist_fig.update_yaxes(title="% of vulnerabilities")
+            #hist_fig.update_layout(title='Vulnerabilities Severity',xaxis={'categoryorder':'total descending'})
+
+            # TRYING TO FIX A BUGGED PLOT
+
+            a=severity_df.groupby(['Tool','Severity']).count()[['Id']].reset_index()
+            a=a.rename(columns={'Id':'Totalind'})
+            b=a.groupby(['Tool']).sum()[['Totalind']].reset_index()
+            b=b.rename(columns={'Totalind':'Total'})
+            a=a.merge(b,how='inner',on='Tool')
+            a['perc']=100*a['Totalind']/a['Total']
+            a['perc']=a['perc'].apply(lambda x: round(x,1))
+
+            color_discrete_sequence={'CRITICAL':'#FF6347','HIGH':'#FFA500','LOW':'#87CEEB','MEDIUM':'#005B96'}
             hist_fig=go.Figure()
-            hist_fig=px.histogram(severity_df,x='Tool',\
-                 y=severity_df.index,\
-                 color='Severity',\
-                 barnorm='percent',text_auto=True,\
-                 #color_discrete_sequence=px.colors.qualitative.G10)
-                 color_discrete_sequence=['#FF6347', '#FFA500',  '#005B96','#87CEEB'],
-                 category_orders=category_orders)
-            hist_fig.update_traces(texttemplate='%{y:.2f}%')
-            hist_fig.update_yaxes(title="% of vulnerabilities")
-            hist_fig.update_layout(title='Vulnerabilities Severity',xaxis={'categoryorder':'total descending'})
+            for sev in a['Severity'].unique():
+                dummy=a[a['Severity']==sev]
 
+                hist_fig.add_trace(go.Bar(x=dummy['Tool'],\
+                                    y=dummy['perc'],\
+                                    name=sev,text=[f'{i}%' for i in dummy['perc']],\
+                                    marker=dict(color=color_discrete_sequence[sev])))
+            hist_fig.update_layout(barmode="stack")
+            hist_fig.update_yaxes(title="% of vulnerabilities")
+            hist_fig.update_layout(title='Vulnerabilities Severity')
+            
+
+            
             hist_chart=dcc.Graph(figure=hist_fig)
+            
 
             
             

@@ -43,9 +43,10 @@ def get_vulnerability(match_word,date_ini,date_end):
     date_string=f"pubStartDate={date_ini}&pubEndDate={date_end}"
     page_string="startIndex=0"
     url=f"https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch={match_word}&{page_string}&{date_string}"
+    header={'apiKey':'54e6cdc7-00cc-4b17-937e-8282ab701f29 '}
     msg=False
     try:
-        res2=requests.get(url).json()
+        res2=requests.get(url,headers=header).json()
         #print(res2)
         output=[]
         for vulnerability in res2['vulnerabilities']:

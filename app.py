@@ -292,6 +292,7 @@ def scan_doc(nclicks,big_str):
             
             # severity plot
             severity_df=all_vulnerabilities_df[~all_vulnerabilities_df['Severidad'].isnull()]
+            severity_df=severity_df[severity_df['Herramienta'].isin(tools_found)]
 
             category_orders = {
                 'Severidad': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
