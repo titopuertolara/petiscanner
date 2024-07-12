@@ -15,6 +15,7 @@ import plotly.express as px
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
+app.title="OSV scanner"
 server = app.server
 ref_tools=pd.read_csv('reference_tools.csv')
 tools_list=ref_tools['software'].to_list()

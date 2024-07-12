@@ -3,3 +3,4 @@ dash
 wordcloud
 Pillow
 pypdf
+dash-extensions
