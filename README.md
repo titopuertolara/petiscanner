@@ -36,10 +36,13 @@ Ensure you have Python installed on your system. You can download it from [pytho
    Go to https://nvd.nist.gov/developers/request-an-api-key
   
 
-6. **Install the requirements**
+5. **Install the requirements**
    ```bash
    pip install -r requirements.txt
-
+6.**Configure API key**
+   Go to utils.py and edit the following line
+   ```bash
+   header={'apiKey':'put your apikey here'}
 7. **Run the application**
    ```bash
    python appen.py
