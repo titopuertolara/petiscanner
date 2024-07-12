@@ -40,7 +40,7 @@ Ensure you have Python installed on your system. You can download it from [pytho
    ```bash
    pip install -r requirements.txt
    
-6.**Configure API key**
+6. **Configure API key**
    Go to utils.py and edit the following line
    ```bash
    header={"apiKey":"put your apikey here"}
