@@ -26,7 +26,7 @@ Ensure you have Python installed on your system. You can download it from [pytho
 3. **Activate the virtual environment**
    ```bash
    source yourvirtualenv/bin/activate
-
+   ```
    Or
 
    ```bash
