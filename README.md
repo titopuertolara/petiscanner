@@ -1,3 +1,4 @@
+![App Screenshot](https://github.com/titopuertolara/petiscanner/blob/main/assets/logo.png)
 # OSV Scanner
 
 This Dash Plotly app scans vulnerabilities in the tools reported in digital infrastructure documentation.
