@@ -17,3 +17,29 @@ Ensure you have Python installed on your system. You can download it from [pytho
    ```bash
    git clone https://github.com/titopuertolara/petiscanner.git
    cd petiscanner
+
+2. **Create a virtual environment**
+   ```bash
+   python -m venv yourvirtualenv
+
+3. **Activate the virtual environment**
+   ```bash
+   source yourvirtualenv/bin/activate
+
+4. **Install the requirements**
+   ```bash
+   pip install -r requirements.txt
+
+5. **Run the application**
+   ```bash
+   python appen.py
+
+
+Open your web browser and navigate to http://127.0.0.1:8050.
+
+
+
+   
+   
+
+
