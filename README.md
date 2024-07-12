@@ -1,7 +1,7 @@
 ![App Screenshot](https://github.com/titopuertolara/petiscanner/blob/main/assets/logo.png)
 # OSV Scanner
 
-This Dash Plotly app scans vulnerabilities in the tools reported in digital infrastructure documentation.
+This Dash Plotly app scans vulnerabilities in the open source tools reported in digital infrastructure documentation.
 
 ## Getting Started
 
@@ -26,7 +26,7 @@ Ensure you have Python installed on your system. You can download it from [pytho
 3. **Activate the virtual environment**
    ```bash
    source yourvirtualenv/bin/activate
-
+   ```
    Or
 
    ```bash
