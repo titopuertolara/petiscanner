@@ -38,6 +38,7 @@ Ensure you have Python installed on your system. You can download it from [pytho
    Go to *utils.py* and edit the followng line
    ```bash
    header={'apiKey':'put your apikey here'}
+```
 
 6. **Install the requirements**
    ```bash
