@@ -6,7 +6,6 @@ import datetime
 import io
 
 import pandas as pd
-from langchain_community.document_loaders import PyPDFLoader
 from pypdf import PdfReader
 from utils import *
 from tqdm import tqdm

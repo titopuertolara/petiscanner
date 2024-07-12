@@ -1,0 +1,5 @@
+pandas
+dash
+wordcloud
+Pillow
+pypdf
