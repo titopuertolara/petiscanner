@@ -42,7 +42,7 @@ Ensure you have Python installed on your system. You can download it from [pytho
 6.**Configure API key**
    Go to utils.py and edit the following line
    ```bash
-   header={'apiKey':'put your apikey here'}
+   header={"apiKey":"put your apikey here"}
 7. **Run the application**
    ```bash
    python appen.py
