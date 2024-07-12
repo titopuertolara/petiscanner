@@ -30,13 +30,20 @@ Ensure you have Python installed on your system. You can download it from [pytho
    Or
 
    ```bash
-   conda activate yourvirtualenv      
+   conda activate yourvirtualenv
+4. **Request an API key**
+   Go to https://nvd.nist.gov/developers/request-an-api-key
 
-4. **Install the requirements**
+5.**Configure API key**
+   Go to *utils.py* and edit the followng line
+   ```bash
+   header={'apiKey':'put your apikey here'}
+
+6. **Install the requirements**
    ```bash
    pip install -r requirements.txt
 
-5. **Run the application**
+6. **Run the application**
    ```bash
    python appen.py
 
