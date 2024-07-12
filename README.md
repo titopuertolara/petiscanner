@@ -33,8 +33,7 @@ Ensure you have Python installed on your system. You can download it from [pytho
    conda activate yourvirtualenv
    ```
    
-4. **Request an API key**
-   Go to https://nvd.nist.gov/developers/request-an-api-key
+
    
 
 5.**Configure API key**
