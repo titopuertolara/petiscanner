@@ -27,6 +27,11 @@ Ensure you have Python installed on your system. You can download it from [pytho
    ```bash
    source yourvirtualenv/bin/activate
 
+   Or
+
+   ```bash
+   conda activate yourvirtualenv      
+
 4. **Install the requirements**
    ```bash
    pip install -r requirements.txt
