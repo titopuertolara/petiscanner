@@ -214,7 +214,7 @@ def scan_doc(nclicks,big_str):
         progress_value=fsc.get("progress")
         if float(progress_value)<100:
             fsc1.set("tools",f"Document has not been loaded yet.")
-            return '','','',''
+            return '','','','',''
     
             
 
