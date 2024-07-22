@@ -1,5 +1,6 @@
 from dash import Dash, dcc, html, dash_table, Input, Output, State, callback,ctx
 from dash_extensions.enrich import Trigger, FileSystemCache
+
 import time
 import base64
 import datetime
@@ -11,10 +12,11 @@ from utils import *
 from tqdm import tqdm
 import plotly.graph_objects as go 
 import plotly.express as px
+import uuid
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = Dash(__name__, external_stylesheets=external_stylesheets)
+app = Dash(__name__, external_stylesheets=external_stylesheets,suppress_callback_exceptions=True)
 app.title="OSV scanner"
 server = app.server
 ref_tools=pd.read_csv('reference_tools.csv')
@@ -25,7 +27,7 @@ fsc.set("progress", '0')
 fsc1.set("tools",'idle')
 colors_piechart=px.colors.qualitative.D3
 #print(tools_list)
-
+print(uuid.uuid4())
 with open("stopwords-en.txt","r") as sfile:
     stopwords=sfile.readlines()
 stopwords=[i.replace('\n','') for i in stopwords]
@@ -34,6 +36,7 @@ stopwords=[i.replace('\n','') for i in stopwords]
 #stopwords.append('los')
 #stopwords.append('en')
 #print(stopwords)
+#help(du.configure_upload)
 
 colors = {
     'background': '#73D0B3',
@@ -49,120 +52,146 @@ colors = {
     'progress_bar': '#00B08B'
 }
 
-app.layout = html.Div([
-    # Header
-    html.Div([
-        
-        html.Div([
-        html.Div([
-            html.H1("OSV Scanner", style={'color': colors['header_text'], 'marginRight': '10px', 'display': 'inline-block'}),
-            html.P("powered by"),
-            html.Img(src='/assets/logo.png', style={'height': '60px', 'verticalAlign': 'middle'})
-        ], style={'display': 'flex', 'alignItems': 'center','justifyContent': 'center',}),
-        html.Hr()
-    ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
-        
-        html.H5(id='header-1',children=[
-            "This App uses the ",
-            html.A('National Vulnerability Database API', href='https://nvd.nist.gov/',target='_blank', style={'color': colors['link']}),
-            
-        ], style={'textAlign': 'center', 'color': colors['header_text']}),
-        html.P("The main purpose of this tool is to help local governments to identify digital infrastructure vulnerabilities trough their official docs. ", style={'textAlign': 'center', 'color': colors['header_text']}),
-        html.Hr()
-    ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
 
-    # File Upload Section
-    html.Div([
-        dcc.Upload(
-            id='upload-data',
-            children=html.Div([
-                'Drag and drop PDF or ',
-                html.A('Select', style={'color': colors['link2'], 'textDecoration': 'underline'})
-            ]),
-            style={
-                'width': '100%',
-                'height': '60px',
-                'lineHeight': '60px',
-                'borderWidth': '2px',
-                'borderStyle': 'dashed',
-                'borderRadius': '10px',
-                'textAlign': 'center',
-                'margin': '20px 0',
-                'backgroundColor': colors['upload_background'],
-                'cursor': 'pointer'
-            }
-        )
-    ], style={'textAlign': 'center'}),
 
-    # Output Section
-    html.Div(id='output-data-upload', style={'margin': '20px 0'}),
 
-    # Progress Bar and Scan Button
-    html.Div([
-        html.Progress(id='loadbar', max=100, style={'width': '100%', 'margin': '10px 0', 'color': colors['progress_bar']}),
-        html.Br(),
-        html.Button('Scan', id='scanner-button', n_clicks=0, style={
-            'width': '100%',
-            
-            'backgroundColor': colors['button_background'],
-            'color': colors['button_text'],
-            'border': 'none',
-            'borderRadius': '5px',
-            'cursor': 'pointer',
-            'fontSize': '16px'
-        })
-    ], style={'textAlign': 'center'}),
 
-    # Message and Tool Sections
-    html.Div(id='msg-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
-    html.Div(id='tool-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
+def serve_layout():
+    session_id = str(uuid.uuid4())
 
-    # Row for Word Cloud and Pie Chart Divs
-    dcc.Loading(id='loading1',type='circle',
-    children=[
-        html.Div([
-            html.Div(id='wordcloud-image', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'}),
-            html.Div(id='pie-chart-div', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'})
-        ], style={'display': 'flex', 'flexDirection': 'row'}),
-        #Normalized barplot
-        html.Div(id='normalized-barplot-div',style={'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'}),
-        # Vulnerabilities Div
-        html.Div(id='vulnerabilities-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
-    ]),
-    # Hidden Storage and Interval Component
-    dcc.Store(id='pdf_content'),
-    dcc.Interval(id='check-bar-interval', interval=500, n_intervals=0)
-], style={'fontFamily': 'Arial, sans-serif', 'backgroundColor': colors['background'], 'padding': '20px'})
+    fsc = FileSystemCache(f"Cache/{session_id}_cache_dir")
+    fsc1= FileSystemCache(f"Cache/{session_id}_cache_tools")
+    fsc.set(f"{session_id}_progress", '0')
+    fsc1.set(f"{session_id}_tools",'idle')
 
-#callbacks for translation
+    return html.Div([
+                    # Header
+                    html.Div([
+                        
+                        html.Div([
+                        html.Div([
+                            html.H1("OSV Scanner", style={'color': colors['header_text'], 'marginRight': '10px', 'display': 'inline-block'}),
+                            html.P("powered by"),
+                            html.Img(src='/assets/logo.png', style={'height': '60px', 'verticalAlign': 'middle'})
+                        ], style={'display': 'flex', 'alignItems': 'center','justifyContent': 'center',}),
+                        html.Hr()
+                    ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
+                        
+                        html.H5(id='header-1',children=[
+                            "This App uses the ",
+                            html.A('National Vulnerability Database API', href='https://nvd.nist.gov/',target='_blank', style={'color': colors['link']}),
+                            
+                        ], style={'textAlign': 'center', 'color': colors['header_text']}),
+                        html.P("The main purpose of this tool is to help local governments to identify digital infrastructure vulnerabilities trough their official docs. ", style={'textAlign': 'center', 'color': colors['header_text']}),
+                        html.Hr()
+                    ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
 
-#@app.callback()
+                    # File Upload Section
+                    html.Div([
+                        dcc.Upload(
+                            id='upload-data',
+                            children=html.Div([
+                                'Drag and drop PDF or ',
+                                html.A('Select', style={'color': colors['link2'], 'textDecoration': 'underline'})
+                            ]),
+                            style={
+                                'width': '100%',
+                                'height': '60px',
+                                'lineHeight': '60px',
+                                'borderWidth': '2px',
+                                'borderStyle': 'dashed',
+                                'borderRadius': '10px',
+                                'textAlign': 'center',
+                                'margin': '20px 0',
+                                'backgroundColor': colors['upload_background'],
+                                'cursor': 'pointer'
+                            }
+                        )
+                    ], style={'textAlign': 'center'}),
+
+                    # Output Section
+                    html.Div(id='output-data-upload', style={'margin': '20px 0'}),
+
+                    # Progress Bar and Scan Button
+                    
+                    html.Div([
+                        
+                        
+                        html.Progress(id='loadbar', max=100, style={'width': '100%', 'margin': '10px 0', 'color': colors['progress_bar']}),
+                        #html.Div(dbc.Progress(id='loadbar',value=50, style={'width': '100%', 'margin': '10px 0'})),
+                        html.Br(),
+                        html.Button('Scan', id='scanner-button', n_clicks=0, style={
+                            'width': '100%',
+                            
+                            'backgroundColor': colors['button_background'],
+                            'color': colors['button_text'],
+                            'border': 'none',
+                            'borderRadius': '5px',
+                            'cursor': 'pointer',
+                            'fontSize': '16px'
+                        })
+                    ], style={'textAlign': 'center'}),
+
+                    # Message and Tool Sections
+                    html.Div(id='msg-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
+                    html.Div(id='tool-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
+
+                    # Row for Word Cloud and Pie Chart Divs
+                    dcc.Loading(id='loading1',type='circle',
+                    children=[
+                        html.Div([
+                            html.Div(id='wordcloud-image', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'}),
+                            html.Div(id='pie-chart-div', style={'flex': '1', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'})
+                        ], style={'display': 'flex', 'flexDirection': 'row'}),
+                        #Normalized barplot
+                        html.Div(id='normalized-barplot-div',style={'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px', 'margin': '10px'}),
+                        # Vulnerabilities Div
+                        html.Div(id='vulnerabilities-div', style={'margin': '20px 0', 'padding': '10px', 'backgroundColor': colors['div_background'], 'borderRadius': '5px'}),
+                    ]),
+                    # Hidden Storage and Interval Component
+                    dcc.Store(id='pdf_content'),
+                    dcc.Interval(id='check-bar-interval', interval=500, n_intervals=0),
+                    dcc.Store(id='session-id',data=[session_id])
+                ], style={'fontFamily': 'Arial, sans-serif', 'backgroundColor': colors['background'], 'padding': '20px'})
+    
+
+
+
+app.layout=serve_layout 
 
 #this callback tracks which tool is being scanned during the process
 @app.callback(Output('tool-div','children'),
-              [Input('check-bar-interval','n_intervals')])
-def check_tool_progress(n):
-    value=fsc1.get('tools')
+              [Input('check-bar-interval','n_intervals'),
+              Input('session-id','data')])
+def check_tool_progress(n,session_id):
+    
+    value=fsc1.get(f'{session_id[0]}_tools')
     if value is None:
         value='idle'
     return value
 #this callback tracks the progress bar
 @app.callback(Output('loadbar','value'),
               Output('loadbar','title'),
-             [Input('check-bar-interval','n_intervals')])
-def check_loadbar(n):
-    value=fsc.get("progress")
+             [Input('check-bar-interval','n_intervals'),
+             Input('session-id','data')])
+def check_loadbar(n,session_id):
+    value=fsc.get(f"{session_id[0]}_progress")
     if value is None:
         value='0'
     
     return value,f'{round(float(value),0)} %'
 
+
+
 # this callback is the pdf loading process, all the pdf contents are loaded to a dcc.Store
 @app.callback(Output('output-data-upload','children'),
               Output('pdf_content','data'),
+                            
             [Input('upload-data','contents'),
-             Input('upload-data','filename')])
-def get_data(contents,filename):
+             Input('upload-data','filename'),
+             Input('session-id','data')
+             ])
+def get_data(contents,filename,session_id):
     print(filename)
     #print(contents)
     #in case to save pdf file into assets
@@ -171,8 +200,9 @@ def get_data(contents,filename):
     #loader = PyPDFLoader(f'assets/{filename[0]}')
     #docs=loader.load_and_split()
     
+    
     try:
-        fsc.set("progress", '0')
+        fsc.set(f"{session_id[0]}_progress", '0')
         encoded_content=contents.split(',')[1]
         pdf_buffer=io.BytesIO(base64.b64decode(encoded_content))
         reader = PdfReader(pdf_buffer)
@@ -187,9 +217,10 @@ def get_data(contents,filename):
             big_str+=' '+page_text.lower()
             progress=n*100/total_pages
             
-            fsc.set("progress", f'{progress}')
-        fsc.set("progress", '100')
-        fsc1.set("tools",f"Document ready.")
+            fsc.set(f"{session_id[0]}_progress", f'{progress}')
+            
+        fsc.set(f"{session_id[0]}_progress", '100')
+        fsc1.set(f'{session_id[0]}_tools',f"Document ready.")
         print('loaded')
         return filename,[big_str]
 
@@ -207,13 +238,14 @@ def get_data(contents,filename):
               Output('pie-chart-div','children'),
                Output('normalized-barplot-div','children'),
               [Input('scanner-button','n_clicks'),
-               State('pdf_content','data')])
-def scan_doc(nclicks,big_str):
-    fsc1.set("tools","idle")
+               State('pdf_content','data'),
+               Input('session-id','data')])
+def scan_doc(nclicks,big_str,session_id):
+    fsc1.set(f'{session_id[0]}_tools',"idle")
     if ctx.triggered_id=='scanner-button':
-        progress_value=fsc.get("progress")
+        progress_value=fsc.get(f"{session_id[0]}_progress")
         if float(progress_value)<100:
-            fsc1.set("tools",f"Document has not been loaded yet.")
+            fsc1.set(f'{session_id[0]}_tools',f"Document has not been loaded yet.")
             return '','','','',''
     
             
@@ -242,27 +274,27 @@ def scan_doc(nclicks,big_str):
         
         true_counts=0
         for k ,tool in enumerate(tools_found):
-            fsc1.set("tools",f'Querying {tool} ({k+1}/{len(tools_found)})..')
+            fsc1.set(f'{session_id[0]}_tools',f'Querying {tool} ({k+1}/{len(tools_found)})..')
             df,msg=get_vulnerability_dataframe(tool.strip(),lang='en')
             print(tool,msg)
             if df.shape[0]>0:
                 vulnerabilities_list.append(df)
                 true_counts+=1
             if not msg:
-                fsc1.set("tools",f"There's an issue scanning {tool} from NVD (please search directly from main website)")
+                fsc1.set(f'{session_id[0]}_tools',f"There's an issue scanning {tool} from NVD (please search directly from main website)")
                 time.sleep(1)
                 
         if len(tools_found)>0:
             efficency=round(100*true_counts/len(tools_found),1)
             if efficency==0:
-                fsc1.set("tools",f"API is unstable or there are not vulnerabilities for these tools in the last month, please try again later.")
+                fsc1.set(f'{session_id[0]}_tools',f"API is unstable or there are not vulnerabilities for these tools in the last month, please try again later.")
 
             elif efficency<50:
-                fsc1.set("tools",f"Just {efficency}% of requests were succesful, wait 2 minutes and try scanning again.")
+                fsc1.set(f'{session_id[0]}_tools',f"Just {efficency}% of requests were succesful, wait 2 minutes and try scanning again.")
             else: 
-                fsc1.set("tools",f"Finished with {efficency}% of succesful requests.")
+                fsc1.set(f'{session_id[0]}_tools',f"Finished with {efficency}% of succesful requests.")
         else:
-            fsc1.set("tools",f"Not tools found inside this document.")
+            fsc1.set(f'{session_id[0]}_tools',f"Not tools found inside this document.")
 
 
         if len(vulnerabilities_list)>0:
