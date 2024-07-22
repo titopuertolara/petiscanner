@@ -23,8 +23,8 @@ ref_tools=pd.read_csv('reference_tools.csv')
 tools_list=ref_tools['software'].to_list()
 fsc = FileSystemCache("cache_dir")
 fsc1= FileSystemCache("cache_tools")
-fsc.set("progress", '0')
-fsc1.set("tools",'idle')
+#fsc.set("progress", '0')
+#fsc1.set("tools",'idle')
 colors_piechart=px.colors.qualitative.D3
 #print(tools_list)
 print(uuid.uuid4())
@@ -87,27 +87,29 @@ def serve_layout():
                     ], style={'padding': '10px', 'backgroundColor': colors['header_background']}),
 
                     # File Upload Section
-                    html.Div([
-                        dcc.Upload(
-                            id='upload-data',
-                            children=html.Div([
-                                'Drag and drop PDF or ',
-                                html.A('Select', style={'color': colors['link2'], 'textDecoration': 'underline'})
-                            ]),
-                            style={
-                                'width': '100%',
-                                'height': '60px',
-                                'lineHeight': '60px',
-                                'borderWidth': '2px',
-                                'borderStyle': 'dashed',
-                                'borderRadius': '10px',
-                                'textAlign': 'center',
-                                'margin': '20px 0',
-                                'backgroundColor': colors['upload_background'],
-                                'cursor': 'pointer'
-                            }
-                        )
-                    ], style={'textAlign': 'center'}),
+                    dcc.Loading(id='box-loader',children=[
+                        html.Div([
+                            dcc.Upload(
+                                id='upload-data',
+                                children=html.Div([
+                                    'Drag and drop PDF or ',
+                                    html.A('Select', style={'color': colors['link2'], 'textDecoration': 'underline'})
+                                ]),
+                                style={
+                                    'width': '100%',
+                                    'height': '60px',
+                                    'lineHeight': '60px',
+                                    'borderWidth': '2px',
+                                    'borderStyle': 'dashed',
+                                    'borderRadius': '10px',
+                                    'textAlign': 'center',
+                                    'margin': '20px 0',
+                                    'backgroundColor': colors['upload_background'],
+                                    'cursor': 'pointer'
+                                }
+                            )
+                        ], style={'textAlign': 'center'})
+                    ]),
 
                     # Output Section
                     html.Div(id='output-data-upload', style={'margin': '20px 0'}),
