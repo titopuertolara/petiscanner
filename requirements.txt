@@ -4,3 +4,4 @@ wordcloud
 Pillow
 pypdf
 dash-extensions
+tqdm
