@@ -21,8 +21,8 @@ app.title="OSV scanner"
 server = app.server
 ref_tools=pd.read_csv('reference_tools.csv')
 tools_list=ref_tools['software'].to_list()
-fsc = FileSystemCache("cache_dir")
-fsc1= FileSystemCache("cache_tools")
+fsc = FileSystemCache("Cache/cache_dir")
+fsc1= FileSystemCache("Cache/cache_tools")
 #fsc.set("progress", '0')
 #fsc1.set("tools",'idle')
 colors_piechart=px.colors.qualitative.D3
@@ -59,8 +59,8 @@ colors = {
 def serve_layout():
     session_id = str(uuid.uuid4())
 
-    fsc = FileSystemCache(f"Cache/{session_id}_cache_dir")
-    fsc1= FileSystemCache(f"Cache/{session_id}_cache_tools")
+    #fsc = FileSystemCache(f"Cache/{session_id}_cache_dir")
+    #fsc1= FileSystemCache(f"Cache/{session_id}_cache_tools")
     fsc.set(f"{session_id}_progress", '0')
     fsc1.set(f"{session_id}_tools",'idle')
 
