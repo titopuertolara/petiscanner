@@ -93,7 +93,7 @@ def serve_layout():
                                 id='upload-data',
                                 children=html.Div([
                                     'Drag and drop PDF or ',
-                                    html.A('Select', style={'color': colors['link2'], 'textDecoration': 'underline'})
+                                    html.A('Select (Max 15MB)', style={'color': colors['link2'], 'textDecoration': 'underline'})
                                 ]),
                                 style={
                                     'width': '100%',
@@ -410,5 +410,5 @@ def scan_doc(nclicks,big_str,session_id):
         return final_msg ,vul_data_table,wordcloud_plot,pie_chart,hist_chart
     return '','','','',''
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=False)
 
