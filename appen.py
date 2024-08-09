@@ -410,5 +410,5 @@ def scan_doc(nclicks,big_str,session_id):
         return final_msg ,vul_data_table,wordcloud_plot,pie_chart,hist_chart
     return '','','','',''
 if __name__ == '__main__':
-    app.run(host='0.0.0.0',debug=False)
+    app.run(debug=False)
 

@@ -5,3 +5,4 @@ Pillow
 pypdf
 dash-extensions
 tqdm
+gunicorn
