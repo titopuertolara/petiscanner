@@ -70,6 +70,7 @@ app.layout = html.Div(
                         "gridTemplateColumns": "repeat(4, 1fr)",
                         "gap": "1rem",
                         "marginBottom": "2rem",
+                        "width": "100%",  # Ensure full width of container
                     },
                     children=[
                         html.Div(
@@ -79,15 +80,15 @@ app.layout = html.Div(
                             style={
                                 "backgroundColor": "#FFFFFF",
                                 "color": "#FF5A36",
-                                "borderRadius": "5px",
-                                "padding": "1rem",
+                                "borderRadius": "10px",
+                                "padding": "1.5rem",
                                 "fontWeight": "bold",
                                 "textAlign": "center",
                                 "cursor": "pointer",
                                 "border": "2px solid #FF5A36",
-                                "fontSize": "1rem",  # Set same font size
-                                "maxWidth": "200px",  # Set consistent width
-                                "margin": "0 auto",
+                                "fontSize": "1.2rem",
+                                "width": "100%",
+                                "boxSizing": "border-box",
                             },
                         ),
                         html.Div(
@@ -97,15 +98,15 @@ app.layout = html.Div(
                             style={
                                 "backgroundColor": "#FFFFFF",
                                 "color": "#FF5A36",
-                                "borderRadius": "5px",
-                                "padding": "1rem",
+                                "borderRadius": "10px",
+                                "padding": "1.5rem",
                                 "fontWeight": "bold",
                                 "textAlign": "center",
                                 "cursor": "pointer",
                                 "border": "2px solid #FF5A36",
-                                "fontSize": "1rem",  # Set same font size
-                                "maxWidth": "200px",  # Set consistent width
-                                "margin": "0 auto",
+                                "fontSize": "1.2rem",
+                                "width": "100%",
+                                "boxSizing": "border-box",
                             },
                         ),
                         html.Div(
@@ -115,15 +116,15 @@ app.layout = html.Div(
                             style={
                                 "backgroundColor": "#FFFFFF",
                                 "color": "#FF5A36",
-                                "borderRadius": "5px",
-                                "padding": "1rem",
+                                "borderRadius": "10px",
+                                "padding": "1.5rem",
                                 "fontWeight": "bold",
                                 "textAlign": "center",
                                 "cursor": "pointer",
                                 "border": "2px solid #FF5A36",
-                                "fontSize": "1rem",  # Set same font size
-                                "maxWidth": "200px",  # Set consistent width
-                                "margin": "0 auto",
+                                "fontSize": "1.2rem",
+                                "width": "100%",
+                                "boxSizing": "border-box",
                             },
                         ),
                         html.Div(
@@ -133,15 +134,15 @@ app.layout = html.Div(
                             style={
                                 "backgroundColor": "#FFFFFF",
                                 "color": "#FF5A36",
-                                "borderRadius": "5px",
-                                "padding": "1rem",
+                                "borderRadius": "10px",
+                                "padding": "1.5rem",
                                 "fontWeight": "bold",
                                 "textAlign": "center",
                                 "cursor": "pointer",
                                 "border": "2px solid #FF5A36",
-                                "fontSize": "1rem",  # Set same font size
-                                "maxWidth": "200px",  # Set consistent width
-                                "margin": "0 auto",
+                                "fontSize": "1.2rem",
+                                "width": "100%",
+                                "boxSizing": "border-box",
                             },
                         ),
                     ],
@@ -155,12 +156,12 @@ app.layout = html.Div(
                         style={
                             "backgroundColor": "#FF5A36",
                             "color": "#FFFFFF",
-                            "borderRadius": "5px",
-                            "padding": "1rem",
+                            "borderRadius": "10px",
+                            "padding": "1.5rem",
                             "fontWeight": "bold",
                             "cursor": "pointer",
-                            "maxWidth": "200px",
-                            "margin": "0 auto",
+                            "width": "100%",
+                            "boxSizing": "border-box",
                         },
                     ),
                 ),
@@ -188,13 +189,41 @@ app.layout = html.Div(
 def handle_button_click(n_upload, n_how, n_who, n_info):
     ctx = callback_context
     if not ctx.triggered:
-        return {"display": "none"}, *([{"backgroundColor": "#FFFFFF", "color": "#FF5A36", "border": "2px solid #FF5A36"}] * 4)
+        return {"display": "none"}, *([{
+            "backgroundColor": "#FFFFFF", 
+            "color": "#FF5A36", 
+            "border": "2px solid #FF5A36",
+            "borderRadius": "10px",
+            "padding": "1.5rem",
+            "fontWeight": "bold",
+            "textAlign": "center",
+            "cursor": "pointer",
+            "fontSize": "1.2rem",
+            "width": "100%",
+            "boxSizing": "border-box",
+        }] * 4)
 
     button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-    # Default styles for all buttons
-    default_style = {"backgroundColor": "#FFFFFF", "color": "#FF5A36", "border": "2px solid #FF5A36"}
-    selected_style = {"backgroundColor": "#FF5A36", "color": "#FFFFFF", "border": "2px solid #FF5A36"}
+    # Default and selected styles
+    default_style = {
+        "backgroundColor": "#FFFFFF", 
+        "color": "#FF5A36", 
+        "border": "2px solid #FF5A36",
+        "borderRadius": "10px",
+        "padding": "1.5rem",
+        "fontWeight": "bold",
+        "textAlign": "center",
+        "cursor": "pointer",
+        "fontSize": "1.2rem",
+        "width": "100%",
+        "boxSizing": "border-box",
+    }
+    selected_style = {
+        **default_style,
+        "backgroundColor": "#FF5A36", 
+        "color": "#FFFFFF",
+    }
 
     # Logic for each button
     if button_id == "btn-upload":
