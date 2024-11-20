@@ -1,183 +1,57 @@
+from dash_extensions.enrich import Trigger, FileSystemCache
+
+import time
+import base64
+import datetime
+import io
 from dash import Dash, html, Input, Output, callback_context
+import pandas as pd
+#from pypdf import PdfReader
+from utils import *
+from tqdm import tqdm
+import plotly.graph_objects as go 
+import plotly.express as px
+import uuid
+from layout import serve_layout
 
-app = Dash(__name__)
+app = Dash(__name__ , suppress_callback_exceptions=True)
 
-# Layout
-app.layout = html.Div(
-    style={
-        "fontFamily": "Arial, sans-serif",
-        "backgroundColor": "#FF5A36",  # Background color
-        "color": "#FFFFFF",  # White text
-        "padding": "2rem",
-        "textAlign": "center",
-    },
-    children=[
-        html.Div(
-            style={
-                "backgroundColor": "#FFFFFF",  # White container
-                "color": "#FF5A36",  # Text color
-                "borderRadius": "10px",
-                "padding": "2rem",
-                "maxWidth": "1200px",  # Wider box
-                "margin": "0 auto",
-            },
-            children=[
-                # Header with FAQ and GitHub link
-                html.Div(
-                    style={
-                        "display": "flex",
-                        "justifyContent": "space-between",
-                        "marginBottom": "1rem",
-                    },
-                    children=[
-                        html.Div("FAQ", style={"fontSize": "1.2rem", "fontWeight": "bold"}),
-                        html.A(
-                            "Join the GitHub community",
-                            href="https://github.com/titopuertolara/petiscanner",
-                            target="_blank",
-                            style={
-                                "fontSize": "1.2rem",
-                                "fontWeight": "bold",
-                                "color": "#FF5A36",
-                                "textDecoration": "none",
-                            },
-                        ),
-                    ],
-                ),
-                html.H1(
-                    "OSV Scanner",
-                    style={
-                        "fontSize": "4rem",  # Larger font size
-                        "marginBottom": "1rem",
-                        "fontWeight": "bold",
-                        "textAlign": "left",  # Align the title to the left
-                    },
-                ),
-                html.P(
-                    (
-                        "The OSV Scanner is a simple online tool that helps identify vulnerabilities in "
-                        "documents like Policy Papers, contracts, and IT plans. Linked to the US National "
-                        "Vulnerability Database, it scans PDF documents to flag potential risks. Open-source "
-                        "and non-intrusive, the OSV Scanner does not require system access, is easy to deploy "
-                        "and does not collect user data. Upload your PDF to get started."
-                    ),
-                    style={"fontSize": "1rem", "lineHeight": "1.5rem", "marginBottom": "2rem"},
-                ),
-                # Buttons
-                html.Div(
-                    style={
-                        "display": "grid",
-                        "gridTemplateColumns": "repeat(4, 1fr)",
-                        "gap": "1rem",
-                        "marginBottom": "2rem",
-                        "width": "100%",  # Ensure full width of container
-                    },
-                    children=[
-                        html.Div(
-                            id="btn-upload",
-                            n_clicks=0,
-                            children="Upload your document",
-                            style={
-                                "backgroundColor": "#FFFFFF",
-                                "color": "#FF5A36",
-                                "borderRadius": "10px",
-                                "padding": "1.5rem",
-                                "fontWeight": "bold",
-                                "textAlign": "center",
-                                "cursor": "pointer",
-                                "border": "2px solid #FF5A36",
-                                "fontSize": "1.2rem",
-                                "width": "100%",
-                                "boxSizing": "border-box",
-                            },
-                        ),
-                        html.Div(
-                            id="btn-how",
-                            n_clicks=0,
-                            children="How does it work?",
-                            style={
-                                "backgroundColor": "#FFFFFF",
-                                "color": "#FF5A36",
-                                "borderRadius": "10px",
-                                "padding": "1.5rem",
-                                "fontWeight": "bold",
-                                "textAlign": "center",
-                                "cursor": "pointer",
-                                "border": "2px solid #FF5A36",
-                                "fontSize": "1.2rem",
-                                "width": "100%",
-                                "boxSizing": "border-box",
-                            },
-                        ),
-                        html.Div(
-                            id="btn-who",
-                            n_clicks=0,
-                            children="Who is it for?",
-                            style={
-                                "backgroundColor": "#FFFFFF",
-                                "color": "#FF5A36",
-                                "borderRadius": "10px",
-                                "padding": "1.5rem",
-                                "fontWeight": "bold",
-                                "textAlign": "center",
-                                "cursor": "pointer",
-                                "border": "2px solid #FF5A36",
-                                "fontSize": "1.2rem",
-                                "width": "100%",
-                                "boxSizing": "border-box",
-                            },
-                        ),
-                        html.Div(
-                            id="btn-info",
-                            n_clicks=0,
-                            children="More info",
-                            style={
-                                "backgroundColor": "#FFFFFF",
-                                "color": "#FF5A36",
-                                "borderRadius": "10px",
-                                "padding": "1.5rem",
-                                "fontWeight": "bold",
-                                "textAlign": "center",
-                                "cursor": "pointer",
-                                "border": "2px solid #FF5A36",
-                                "fontSize": "1.2rem",
-                                "width": "100%",
-                                "boxSizing": "border-box",
-                            },
-                        ),
-                    ],
-                ),
-                # Upload Section
-                html.Div(
-                    id="upload-section",
-                    style={"display": "none"},
-                    children=html.Div(
-                        "Upload the document here",
-                        style={
-                            "backgroundColor": "#FF5A36",
-                            "color": "#FFFFFF",
-                            "borderRadius": "10px",
-                            "padding": "1.5rem",
-                            "fontWeight": "bold",
-                            "cursor": "pointer",
-                            "width": "100%",
-                            "boxSizing": "border-box",
-                        },
-                    ),
-                ),
-            ],
-        ),
-        html.Div(
-            "powered by the Edgelands Institute",
-            style={"marginTop": "2rem", "fontSize": "0.9rem", "color": "#FFFFFF"},
-        ),
-    ],
-)
+fsc = FileSystemCache("Cache/cache_dir")
+fsc1 = FileSystemCache("Cache/cache_tools")
 
+def generate_layout():
+    session_id = str(uuid.uuid4())
+    return serve_layout(session_id)
+
+
+app.layout = generate_layout  
+
+
+
+@app.callback(Output('loadbar', 'value'), 
+             [Input('check-bar-interval','n_intervals'),
+              Input('session-id', 'data')])
+def show_session_id(n,session_id):
+    print(session_id)
+    value=fsc.get(f'{session_id[0]}_progress')
+    print('valor',value)
+    return value
 # Callbacks
+
+@app.callback(Output('session-id-output-2', 'children'), 
+             [Input('session-id', 'data')])
+def show_session_id(session_id):
+    print(session_id)
+    for i in range(100):
+        fsc.set(f'{session_id[0]}_progress',f"{i}")
+        time.sleep(0.5)
+    
+    return 'ok'
+
 @app.callback(
     [
         Output("upload-section", "style"),
+        Output("loadbar", "style"),
         Output("btn-upload", "style"),
         Output("btn-how", "style"),
         Output("btn-who", "style"),
@@ -189,7 +63,7 @@ app.layout = html.Div(
 def handle_button_click(n_upload, n_how, n_who, n_info):
     ctx = callback_context
     if not ctx.triggered:
-        return {"display": "none"}, *([{
+        return {"display": "none"}, {"display": "none"}, *([{
             "backgroundColor": "#FFFFFF", 
             "color": "#FF5A36", 
             "border": "2px solid #FF5A36",
@@ -227,16 +101,15 @@ def handle_button_click(n_upload, n_how, n_who, n_info):
 
     # Logic for each button
     if button_id == "btn-upload":
-        return {"display": "block"}, selected_style, default_style, default_style, default_style
+        return {"display": "block"}, {"display": "block"}, selected_style, default_style, default_style, default_style
     elif button_id == "btn-how":
-        return {"display": "none"}, default_style, selected_style, default_style, default_style
+        return {"display": "none"}, {"display": "none"}, default_style, selected_style, default_style, default_style
     elif button_id == "btn-who":
-        return {"display": "none"}, default_style, default_style, selected_style, default_style
+        return {"display": "none"}, {"display": "none"}, default_style, default_style, selected_style, default_style
     elif button_id == "btn-info":
-        return {"display": "none"}, default_style, default_style, default_style, selected_style
+        return {"display": "none"}, {"display": "none"}, default_style, default_style, default_style, selected_style
     else:
-        return {"display": "none"}, *([default_style] * 4)
-
+        return {"display": "none"}, {"display": "none"}, *([default_style] * 4)
 
 if __name__ == "__main__":
     app.run_server(debug=True)
