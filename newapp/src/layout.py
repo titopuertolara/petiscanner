@@ -64,13 +64,14 @@ def serve_layout(session_id):
                         },
                     ),
                     html.P(
-                        (
+                        id="descriptions-div",
+                        children=[
                             "The OSV Scanner is a simple online tool that helps identify vulnerabilities in "
                             "documents like Policy Papers, contracts, and IT plans. Linked to the US National "
                             "Vulnerability Database, it scans PDF documents to flag potential risks. Open-source "
                             "and non-intrusive, the OSV Scanner does not require system access, is easy to deploy "
                             "and does not collect user data. Upload your PDF to get started."
-                        ),
+                        ],
                         style={"fontSize": "1rem", "lineHeight": "1.5rem", "marginBottom": "2rem"},
                     ),
                     # Buttons
@@ -159,31 +160,26 @@ def serve_layout(session_id):
                     ),
                     # Upload Section
                     dcc.Upload(
-                        id="upload-section",
+                        id='upload-section',
                         children=html.Div(
-                            "Drag and Drop or Select Files",
+                            [
+                                "Drag and Drop or ",
+                                html.A("Select Files", style={"color": "#FF5A36", "textDecoration": "underline"})
+                            ],
                             style={
-                                "backgroundColor": "#FF5A36",
-                                "color": "#FFFFFF",
-                                "borderRadius": "10px",
-                                "padding": "1.5rem",
-                                "fontWeight": "bold",
-                                "cursor": "pointer",
                                 "width": "100%",
-                                "boxSizing": "border-box",
+                                "height": "60px",
+                                "lineHeight": "60px",
+                                "borderWidth": "1px",
+                                "borderStyle": "dashed",
+                                "borderRadius": "5px",
                                 "textAlign": "center",
+                                "marginBottom": "2rem",
+                                "borderColor": "#FF5A36",
+                                "color": "#FF5A36",
+                                "cursor": "pointer",
                             },
                         ),
-                        style={
-                            "width": "100%",
-                            "height": "60px",
-                            "lineHeight": "60px",
-                            "borderWidth": "1px",
-                            "borderStyle": "dashed",
-                            "borderRadius": "5px",
-                            "textAlign": "center",
-                            "marginBottom": "2rem",
-                        },
                         multiple=False,
                         accept=".pdf",
                     ),
@@ -197,14 +193,34 @@ def serve_layout(session_id):
                         "width": "100%",
                         "boxSizing": "border-box",
                         "marginBottom": "2rem",
+                        "border": "2px solid #FFFFFF",
+                        "fontSize": "1.2rem",
+                        "transition": "background-color 0.3s, color 0.3s",
                     }),
                     html.Progress(id='loadbar', max=100),
                     html.Div(id='output-data-upload'),
                     html.Div(id='msg-div'),
-                    html.Div(id='vulnerabilities-div'),
-                    html.Div(id='wordcloud-image'),
-                    html.Div(id='pie-chart-div'),
-                    html.Div(id='normalized-barplot-div')
+                    html.Div(id='tool-div'),
+                    html.Div(
+                        style={
+                            "display": "flex",
+                            "gap": "1rem",
+                            "marginTop": "2rem"
+                        },
+                        children=[
+                            html.Div(id='vulnerabilities-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"}),
+                            html.Div(id='wordcloud-image', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"})
+                        ]
+                    ),
+                    html.Div(
+                        style={
+                            "marginTop": "1rem"
+                        },
+                        children=[
+                            html.Div(id='pie-chart-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "marginBottom": "1rem"}),
+                            html.Div(id='normalized-barplot-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px"})
+                        ]
+                    )
 
                 ],
             ),

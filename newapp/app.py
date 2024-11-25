@@ -4,7 +4,7 @@ import time
 import base64
 import datetime
 import io
-from dash import Dash, html, Input, Output, callback_context
+from dash import Dash, html, Input, Output, callback_context, dcc
 import pandas as pd
 from pypdf import PdfReader
 from utils import *
@@ -13,6 +13,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import uuid
 from src.layout import serve_layout
+from src.page_texts import text_pages
 
 
 def generate_layout():
@@ -20,23 +21,28 @@ def generate_layout():
     return serve_layout(session_id)
 
 app = Dash(__name__ , suppress_callback_exceptions=True)
+app.title="OSV scanner"
 
 fsc = FileSystemCache("Cache/cache_dir")
 fsc1 = FileSystemCache("Cache/cache_tools")
 
 
 
-ref_tools=pd.read_csv('reference_tools.csv')
-tools_list=ref_tools['software'].to_list()
+ref_tools = pd.read_csv('reference_tools.csv')
+tools_list = ref_tools['software'].to_list()
 with open("stopwords-en.txt","r") as sfile:
-    stopwords=sfile.readlines()
-stopwords=[i.replace('\n','') for i in stopwords]
-colors_piechart=px.colors.qualitative.D3
+    stopwords = sfile.readlines()
+stopwords = [i.replace('\n','') for i in stopwords]
+colors_piechart = px.colors.qualitative.D3
+
+page_texts = text_pages()
+
 
 app.layout = generate_layout  
 
 
 
+# checkikn tool
 
 
 @app.callback(Output('tool-div','children'),
@@ -47,6 +53,9 @@ def check_tool_progress(n,session_id):
     value=fsc1.get(f'{session_id[0]}_tools')
     if value is None:
         value='idle'
+    return value
+
+# callback for loadbar
 
 @app.callback(Output('loadbar', 'value'), 
              [Input('check-bar-interval','n_intervals'),
@@ -60,17 +69,6 @@ def check_loadbar(n,session_id):
     
 # Callbacks
 
-'''
-@app.callback(Output('session-id-output-2', 'children'), 
-             [Input('session-id', 'data')])
-def show_session_id(session_id):
-    
-    for i in range(100):
-        fsc.set(f'{session_id[0]}_progress',f"{i}")
-        time.sleep(0.5)
-    
-    return 'ok'
-'''
 
 # this callback is the pdf loading process, all the pdf contents are loaded to a dcc.Store
 @app.callback(Output('output-data-upload','children'),
@@ -118,14 +116,23 @@ def get_data(contents,filename,session_id):
 
     return '',[]
 
+
 @app.callback(
-    [
+    [   Output("descriptions-div", "children"),
         Output("upload-section", "style"),
         Output("loadbar", "style"),
+        Output("scanner-button", "style"),
         Output("btn-upload", "style"),
         Output("btn-how", "style"),
         Output("btn-who", "style"),
         Output("btn-info", "style"),
+        Output("output-data-upload", "style"),
+        Output("msg-div", "style"),
+        Output("vulnerabilities-div", "style"),
+        Output("wordcloud-image", "style"),
+        Output("pie-chart-div", "style"),
+        Output("normalized-barplot-div", "style")
+        
     ],
     [Input("btn-upload", "n_clicks"), Input("btn-how", "n_clicks"),
      Input("btn-who", "n_clicks"), Input("btn-info", "n_clicks")],
@@ -133,7 +140,7 @@ def get_data(contents,filename,session_id):
 def handle_button_click(n_upload, n_how, n_who, n_info):
     ctx = callback_context
     if not ctx.triggered:
-        return {"display": "none"}, {"display": "none"}, *([{
+        return page_texts["upload document"],{"display": "none"}, {"display": "none"}, {"display": "none"}, *([{
             "backgroundColor": "#FFFFFF", 
             "color": "#FF5A36", 
             "border": "2px solid #FF5A36",
@@ -145,7 +152,7 @@ def handle_button_click(n_upload, n_how, n_who, n_info):
             "fontSize": "1.2rem",
             "width": "100%",
             "boxSizing": "border-box",
-        }] * 4)
+        }] * 4), *([{"display": "none"}] * 6)
 
     button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
@@ -169,17 +176,38 @@ def handle_button_click(n_upload, n_how, n_who, n_info):
         "color": "#FFFFFF",
     }
 
+    button_style={
+            "backgroundColor": "#FF5A36",
+            "color": "#FFFFFF",
+            "borderRadius": "10px",
+            "padding": "1rem",
+            "fontWeight": "bold",
+            "cursor": "pointer",
+            "width": "100%",
+            "boxSizing": "border-box",
+            "marginBottom": "2rem",
+            "border": "2px solid #FFFFFF",
+            "fontSize": "1.2rem",
+            "transition": "background-color 0.3s, color 0.3s",
+            "display": "none",
+    }
+
     # Logic for each button
+    text=""
+    
     if button_id == "btn-upload":
-        return {"display": "block"}, {"display": "block"}, selected_style, default_style, default_style, default_style
+        button_style["display"] = "block"
+        
+        return page_texts["upload document"], {"display": "block"}, {"display": "block"}, button_style, selected_style, default_style, default_style, default_style, *([{"display": "block"}] * 6)
     elif button_id == "btn-how":
-        return {"display": "none"}, {"display": "none"}, default_style, selected_style, default_style, default_style
+        
+        return page_texts["How does it work"], {"display": "none"}, {"display": "none"}, button_style, default_style, selected_style, default_style, default_style, *([{"display": "none"}] * 6)
     elif button_id == "btn-who":
-        return {"display": "none"}, {"display": "none"}, default_style, default_style, selected_style, default_style
+        return page_texts["Who is it for"], {"display": "none"}, {"display": "none"}, button_style, default_style, default_style, selected_style, default_style, *([{"display": "none"}] * 6)
     elif button_id == "btn-info":
-        return {"display": "none"}, {"display": "none"}, default_style, default_style, default_style, selected_style
+        return page_texts["More info"], {"display": "none"}, {"display": "none"}, button_style, default_style, default_style, default_style, selected_style, *([{"display": "none"}] * 6)
     else:
-        return {"display": "none"}, {"display": "none"}, *([default_style] * 4)
+        return text, {"display": "none"}, {"display": "none"}, button_style,  default_style, default_style, default_style, selected_style, *([{"display": "none"}] * 6)
     
 
 
@@ -320,21 +348,13 @@ def scan_doc(nclicks,big_str,session_id):
                 hist_fig.add_trace(go.Bar(x=dummy['Tool'],\
                                     y=dummy['perc'],\
                                     name=sev,text=[f'{perc}% ({totalind})' for perc,totalind in zip(dummy['perc'],dummy['Totalind'])],\
-                                    marker=dict(color=color_discrete_sequence[sev])))
-            
+                                    marker=dict(color=color_discrete_sequence[sev])))            
             
             hist_fig.update_layout(barmode="stack",yaxis_range=[0,110])
             hist_fig.update_yaxes(title="% of vulnerabilities")
             hist_fig.update_layout(title='Vulnerabilities Severity')
             
-
-            
-            hist_chart=dcc.Graph(figure=hist_fig)
-            
-
-            
-            
-
+            hist_chart = dcc.Graph(figure=hist_fig)      
 
         else:
             vul_data_table=''
@@ -357,5 +377,5 @@ def scan_doc(nclicks,big_str,session_id):
     return '','','','',''
 
 if __name__ == "__main__":
-    #app.run_server(debug=True)
-    app.run(host="155.138.215.28",debug=True)
+    app.run_server(debug=True)
+    #app.run(host="155.138.215.28",debug=True)
