@@ -209,7 +209,8 @@ def serve_layout(session_id):
                         },
                         children=[
                             html.Div(id='wordcloud-image', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"}),
-                            html.Div(id='pie-chart-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"})
+                            html.Div(id='pie-chart-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1", "width": "100%"})
+                            
                         ]
                     ),
                     html.Div(
