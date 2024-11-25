@@ -4,7 +4,7 @@ import time
 import base64
 import datetime
 import io
-from dash import Dash, html, Input, Output, callback_context, dcc
+from dash import Dash, html, Input, Output, callback_context, dcc, ctx, State
 import pandas as pd
 from pypdf import PdfReader
 from utils import *
@@ -21,7 +21,7 @@ def generate_layout():
     return serve_layout(session_id)
 
 app = Dash(__name__ , suppress_callback_exceptions=True)
-app.title="OSV scanner"
+app.title = "OSV scanner"
 
 fsc = FileSystemCache("Cache/cache_dir")
 fsc1 = FileSystemCache("Cache/cache_tools")
@@ -99,10 +99,10 @@ def get_data(contents,filename,session_id):
         print('Loading pdf file')
         for n in tqdm(range(total_pages)):
             #print(f'page {n+1}')
-            page=reader.pages[n]
-            page_text=page.extract_text()
-            big_str+=' '+page_text.lower()
-            progress=n*100/total_pages
+            page = reader.pages[n]
+            page_text = page.extract_text()
+            big_str += ' '+page_text.lower()
+            progress = n*100/total_pages
             
             fsc.set(f"{session_id[0]}_progress", f'{progress}')
             
@@ -220,10 +220,10 @@ def handle_button_click(n_upload, n_how, n_who, n_info):
               [Input('scanner-button','n_clicks'),
                State('pdf_content','data'),
                Input('session-id','data')])
-def scan_doc(nclicks,big_str,session_id):
+def scan_doc(nclicks, big_str, session_id):
     fsc1.set(f'{session_id[0]}_tools',"idle")
-    if ctx.triggered_id=='scanner-button':
-        progress_value=fsc.get(f"{session_id[0]}_progress")
+    if ctx.triggered_id == 'scanner-button':
+        progress_value = fsc.get(f"{session_id[0]}_progress")
         if float(progress_value)<100:
             fsc1.set(f'{session_id[0]}_tools',f"Document has not been loaded yet.")
             return '','','','',''
@@ -238,34 +238,35 @@ def scan_doc(nclicks,big_str,session_id):
         #print(big_str)
         
         print('looking for tools')
-        tools_found=[]
+        tools_found = []
         for word in tqdm(tools_list):
-            status=word_finder(word,big_str[0])
+            status = word_finder(word,big_str[0])
             if status:
                 tools_found.append(word)
-        tools_found=list(set(tools_found))
+        tools_found = list(set(tools_found))
         print(tools_found)
         
-        vulnerabilities_list=[]
+        vulnerabilities_list = []
         
-        true_counts=0
+        true_counts = 0
         for k ,tool in enumerate(tools_found):
             fsc1.set(f'{session_id[0]}_tools',f'Querying {tool} ({k+1}/{len(tools_found)})..')
-            df,msg=get_vulnerability_dataframe(tool.strip(),lang='en')
-            print(tool,msg)
+            df,msg = get_vulnerability_dataframe(tool.strip(),lang='en')
+            time.sleep(6)
+            print(tool, msg)
             if df.shape[0]>0:
                 vulnerabilities_list.append(df)
-                true_counts+=1
+                true_counts += 1
             if not msg:
                 fsc1.set(f'{session_id[0]}_tools',f"There's an issue scanning {tool} from NVD (please search directly from main website)")
                 time.sleep(1)
                 
         if len(tools_found)>0:
-            efficency=round(100*true_counts/len(tools_found),1)
-            if efficency==0:
+            efficency = round(100*true_counts/len(tools_found),1)
+            if efficency == 0:
                 fsc1.set(f'{session_id[0]}_tools',f"API is unstable or there are not vulnerabilities for these tools in the last month, please try again later.")
 
-            elif efficency<50:
+            elif efficency < 50:
                 fsc1.set(f'{session_id[0]}_tools',f"Just {efficency}% of requests were succesful, wait 2 minutes and try scanning again.")
             else: 
                 fsc1.set(f'{session_id[0]}_tools',f"Finished with {efficency}% of succesful requests.")
@@ -274,21 +275,21 @@ def scan_doc(nclicks,big_str,session_id):
 
 
         if len(vulnerabilities_list)>0:
-            all_vulnerabilities_df=pd.DataFrame()
-            all_vulnerabilities_df=pd.concat(vulnerabilities_list,ignore_index=True)
-            all_vulnerabilities_df=all_vulnerabilities_df.rename(columns={'Fecha':'Date','Autor':'Contributor',\
+            all_vulnerabilities_df = pd.DataFrame()
+            all_vulnerabilities_df = pd.concat(vulnerabilities_list, ignore_index=True)
+            all_vulnerabilities_df = all_vulnerabilities_df.rename(columns={'Fecha':'Date','Autor':'Contributor',\
                                                                          'Vulnerabilidad':'Vulnerability',\
                                                                          'Herramienta':'Tool',\
                                                                          'Severidad':'Severity'})
-            vul_data_table=create_datatable(all_vulnerabilities_df)
-            wordcloud_text=' '.join(all_vulnerabilities_df['Vulnerability'].to_list()).lower()
+            vul_data_table = create_datatable(all_vulnerabilities_df)
+            wordcloud_text = ' '.join(all_vulnerabilities_df['Vulnerability'].to_list()).lower()
             
-            wordcloud_text=remove_stopwords(wordcloud_text,stopwords)
-            wordcloud_image=get_wordcloud(wordcloud_text)
-            wordcloud_plot=html.Img(src=wordcloud_image)
+            wordcloud_text = remove_stopwords(wordcloud_text,stopwords)
+            wordcloud_image = get_wordcloud(wordcloud_text)
+            wordcloud_plot = html.Img(src=wordcloud_image)
             print('pie chart')
-            tools_count=pd.DataFrame(all_vulnerabilities_df['Tool'].value_counts())
-            pie_fig=go.Figure()
+            tools_count = pd.DataFrame(all_vulnerabilities_df['Tool'].value_counts())
+            pie_fig = go.Figure()
             pie_fig.add_trace(go.Pie(labels=tools_count.index,values=tools_count['count'].values))
             pie_fig.update_traces(marker=dict(colors=colors_piechart))
             pie_fig.update_layout(
@@ -306,44 +307,22 @@ def scan_doc(nclicks,big_str,session_id):
 
             # severity plot
             #severity_df=all_vulnerabilities_df[~all_vulnerabilities_df['Severity'].isnull()]
-            severity_df=all_vulnerabilities_df.copy()
-            severity_df['Severity']=severity_df['Severity'].fillna('NOT SPECIFIED')
-            severity_df=severity_df[severity_df['Tool'].isin(tools_found)]
-            #print(severity_df['Tool'].value_counts())
-            
+            severity_df = all_vulnerabilities_df.copy()
+            severity_df['Severity'] = severity_df['Severity'].fillna('NOT SPECIFIED')
+            severity_df = severity_df[severity_df['Tool'].isin(tools_found)]
+                      
+            a = severity_df.groupby(['Tool','Severity']).count()[['Id']].reset_index()
+            a = a.rename(columns={'Id':'Totalind'})
+            b = a.groupby(['Tool']).sum()[['Totalind']].reset_index()
+            b = b.rename(columns={'Totalind':'Total'})
+            a = a.merge(b,how='inner',on='Tool')
+            a['perc'] = 100*a['Totalind']/a['Total']
+            a['perc'] = a['perc'].apply(lambda x: round(x,1))
 
-            # this kind of plot creates a bug where previous x axes is saved and plot isnot reseted
-            #category_orders = {
-            #    'Severity': ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']
-            #}
-            
-            #hist_fig=go.Figure()
-            #hist_fig=px.histogram(severity_df,x='Tool',\
-            #     y=severity_df.index,\
-            #     color='Severity',\
-            #     barnorm='percent',text_auto=True,\
-            #     #color_discrete_sequence=px.colors.qualitative.G10)
-            #     color_discrete_sequence=['#FF6347', '#FFA500',  '#005B96','#87CEEB'],
-            #     category_orders=category_orders)
-            #hist_fig.update_traces(texttemplate='%{y:.2f}%')
-            #hist_fig.update_yaxes(title="% of vulnerabilities")
-            #hist_fig.update_layout(title='Vulnerabilities Severity',xaxis={'categoryorder':'total descending'})
-
-            # TRYING TO FIX A BUGGED PLOT
-            
-            
-            a=severity_df.groupby(['Tool','Severity']).count()[['Id']].reset_index()
-            a=a.rename(columns={'Id':'Totalind'})
-            b=a.groupby(['Tool']).sum()[['Totalind']].reset_index()
-            b=b.rename(columns={'Totalind':'Total'})
-            a=a.merge(b,how='inner',on='Tool')
-            a['perc']=100*a['Totalind']/a['Total']
-            a['perc']=a['perc'].apply(lambda x: round(x,1))
-
-            color_discrete_sequence={'CRITICAL':'#FF6347','HIGH':'#FFA500','LOW':'#87CEEB','MEDIUM':'#005B96','NOT SPECIFIED':'gray'}
-            hist_fig=go.Figure()
+            color_discrete_sequence = {'CRITICAL':'#FF6347','HIGH':'#FFA500','LOW':'#87CEEB','MEDIUM':'#005B96','NOT SPECIFIED':'gray'}
+            hist_fig = go.Figure()
             for sev in a['Severity'].unique():
-                dummy=a[a['Severity']==sev]
+                dummy = a[a['Severity']==sev]
 
                 hist_fig.add_trace(go.Bar(x=dummy['Tool'],\
                                     y=dummy['perc'],\
@@ -364,9 +343,9 @@ def scan_doc(nclicks,big_str,session_id):
 
         
         if len(tools_found)>0:
-            final_msg='Tools Found: '+','.join(tools_found)
+            final_msg = 'Tools Found: '+','.join(tools_found)
         else:
-            final_msg="No tools were found."
+            final_msg = "No tools were found."
 
 
 
@@ -377,5 +356,5 @@ def scan_doc(nclicks,big_str,session_id):
     return '','','','',''
 
 if __name__ == "__main__":
-    #app.run_server(debug=True)
-    app.run(host="155.138.215.28",debug=True)
+    app.run_server(debug=True)
+    #app.run(host="155.138.215.28",debug=True)

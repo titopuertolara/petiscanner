@@ -18,39 +18,37 @@ def word_finder(word,text):
     else:
         return False
     
-#def get_vulnerability(match_word,date_ini,date_end):
-    
-    
-#    date_string=f"pubStartDate={date_ini}&pubEndDate={date_end}"
-#    page_string="startIndex=0"
-#    url=f"https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch={match_word}&{page_string}&{date_string}"
-    
-#    try:
-#        res2=requests.get(url).json()
-        #print(res2)
-#        output=[{'contributor':vulnerability['cve']['sourceIdentifier'],\
-#                'description':vulnerability['cve']['descriptions'],\
-#                'date':vulnerability['cve']['published']} for vulnerability in res2['vulnerabilities']]
-#        msg=True
-#    except:
-#        output=[]
-#        msg=False    
-#    return output,msg
+
 
 def get_vulnerability(match_word,date_ini,date_end):
     
     
     date_string=f"pubStartDate={date_ini}&pubEndDate={date_end}"
     page_string="startIndex=0"
-    url=f"https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch={match_word}&{page_string}&{date_string}"
+    #url=f"https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch={match_word}&{page_string}&{date_string}"
+    url="https://services.nvd.nist.gov/rest/json/cves/2.0"
 
-    header={'apiKey': os.environ['NVDAPIKEY']}
-    print(header)
+    #params={'apiKey': os.environ['NVDAPIKEY']}
+
+    # Prepare headers with API key
+    headers = {
+        'apiKey': os.environ['NVDAPIKEY']
+    }
+    
+    # Construct URL parameters
+    params = {
+        'startIndex': 0,
+        'keywordSearch':match_word,
+        'pubStartDate': date_ini,
+        'pubEndDate': date_end
+    }
+    print(headers)
+    print(params)
     
        
     msg=False
     try:
-        res2=requests.get(url,headers=header ).json()
+        res2=requests.get(url,headers=headers, params=params).json()
         
         #print(res2)
         output=[]
@@ -123,7 +121,8 @@ def create_datatable(df):
         style_cell={'textAlign': 'left','font-family': 'Arial,Helvetica,sans-serif',
                     'textOverflow': 'ellipsis',
                     'overflow': 'hidden',
-                    'maxWidth': 0
+                    'maxWidth': 0,
+                    'color':'black'
                     },
         row_selectable="single",
         columns=[{'name':i,'id':i} for i in df.columns],
