@@ -158,11 +158,10 @@ def serve_layout(session_id):
                         ],
                     ),
                     # Upload Section
-                    html.Div(
+                    dcc.Upload(
                         id="upload-section",
-                        style={"display": "none"},
                         children=html.Div(
-                            "Upload the document here",
+                            "Drag and Drop or Select Files",
                             style={
                                 "backgroundColor": "#FF5A36",
                                 "color": "#FFFFFF",
@@ -172,10 +171,41 @@ def serve_layout(session_id):
                                 "cursor": "pointer",
                                 "width": "100%",
                                 "boxSizing": "border-box",
+                                "textAlign": "center",
                             },
                         ),
+                        style={
+                            "width": "100%",
+                            "height": "60px",
+                            "lineHeight": "60px",
+                            "borderWidth": "1px",
+                            "borderStyle": "dashed",
+                            "borderRadius": "5px",
+                            "textAlign": "center",
+                            "marginBottom": "2rem",
+                        },
+                        multiple=False,
+                        accept=".pdf",
                     ),
+                    html.Button("Scan Document", id='scanner-button', style={
+                        "backgroundColor": "#FF5A36",
+                        "color": "#FFFFFF",
+                        "borderRadius": "10px",
+                        "padding": "1rem",
+                        "fontWeight": "bold",
+                        "cursor": "pointer",
+                        "width": "100%",
+                        "boxSizing": "border-box",
+                        "marginBottom": "2rem",
+                    }),
                     html.Progress(id='loadbar', max=100),
+                    html.Div(id='output-data-upload'),
+                    html.Div(id='msg-div'),
+                    html.Div(id='vulnerabilities-div'),
+                    html.Div(id='wordcloud-image'),
+                    html.Div(id='pie-chart-div'),
+                    html.Div(id='normalized-barplot-div')
+
                 ],
             ),
             html.Div(
@@ -183,11 +213,11 @@ def serve_layout(session_id):
                 style={"marginTop": "2rem", "fontSize": "0.9rem", "color": "#FFFFFF"},
             ),
             dcc.Store(id='session-id',data=[session_id]),
-            
-            html.Div(id='session-id-output-2'),
-            
+            dcc.Store(id='pdf_content'),            
+            html.Div(id='session-id-output-2'),            
             dcc.Interval(id='check-bar-interval', interval=500, n_intervals=0),
         ],
     )
 
     return layout
+
