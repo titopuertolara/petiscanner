@@ -358,4 +358,4 @@ def scan_doc(nclicks,big_str,session_id):
 
 if __name__ == "__main__":
     #app.run_server(debug=True)
-    app.run(host="155.138.215.28",debug=False)
+    app.run(host="155.138.215.28",debug=True)
