@@ -208,8 +208,8 @@ def serve_layout(session_id):
                             "marginTop": "2rem"
                         },
                         children=[
-                            html.Div(id='vulnerabilities-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"}),
-                            html.Div(id='wordcloud-image', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"})
+                            html.Div(id='wordcloud-image', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"}),
+                            html.Div(id='pie-chart-dive', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "flex": "1"})
                         ]
                     ),
                     html.Div(
@@ -217,9 +217,9 @@ def serve_layout(session_id):
                             "marginTop": "1rem"
                         },
                         children=[
-                            html.Div(id='pie-chart-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "marginBottom": "1rem"}),
-                            html.Div(id='normalized-barplot-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px"})
-                        ]
+                            html.Div(id='normalized-barplot-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px", "marginBottom": "1rem"}),
+                            html.Div(id='vulnerabilities-div', style={"backgroundColor": "#FFFFFF", "padding": "1rem", "borderRadius": "10px"})
+                        ] 
                     )
 
                 ],
