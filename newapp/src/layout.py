@@ -225,9 +225,15 @@ def serve_layout(session_id):
 
                 ],
             ),
-            html.Div(
-                "powered by the Edgelands Institute",
-                style={"marginTop": "2rem", "fontSize": "0.9rem", "color": "#FFFFFF"},
+            html.Div(children=[
+                html.A(
+                    "powered by the Edgelands Institute",
+                    href="https://www.edgelands.institute/",
+                    target="_blank",
+                    style={"fontSize": "0.9rem", "color": "#FFFFFF", "textDecoration": "none"}
+                    
+                )],
+                style={"marginTop": "2rem", "fontSize": "0.9rem", "color": "#FFFFFF", "textDecoration": "none"}
             ),
             dcc.Store(id='session-id',data=[session_id]),
             dcc.Store(id='pdf_content'),            
