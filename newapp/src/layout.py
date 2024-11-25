@@ -28,7 +28,7 @@ def serve_layout(session_id):
                     "color": "#FF5A36",  # Text color
                     "borderRadius": "10px",
                     "padding": "2rem",
-                    "maxWidth": "1200px",  # Wider box
+                    "maxWidth": "1500px",  # Wider box
                     "margin": "0 auto",
                 },
                 children=[
