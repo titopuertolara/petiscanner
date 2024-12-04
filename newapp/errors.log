@@ -1,0 +1,211 @@
+Dash is running on http://155.138.215.28:8050/
+
+ * Serving Flask app 'app'
+ * Debug mode: on
+None
+'NoneType' object has no attribute 'split'
+test.pdf
+Searching in 1
+Loading pdf file
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 574.01it/s]
+loaded
+looking for tools
+  0%|          | 0/87 [00:00<?, ?it/s]100%|██████████| 87/87 [00:00<00:00, 1797558.86it/s]
+['linux', 'python']
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'linux', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+linux False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'python', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+python True
+pie chart
+PL-TIC-1400-1700-004-Plan-Estrategico-Tecnologias-Informacion-PETI-2024.pdf
+Searching in 93
+Loading pdf file
+  0%|          | 0/93 [00:00<?, ?it/s]  3%|▎         | 3/93 [00:00<00:03, 26.06it/s]  8%|▊         | 7/93 [00:00<00:02, 30.87it/s] 12%|█▏        | 11/93 [00:00<00:02, 28.61it/s] 17%|█▋        | 16/93 [00:00<00:02, 35.14it/s] 23%|██▎       | 21/93 [00:00<00:01, 38.15it/s] 27%|██▋       | 25/93 [00:00<00:02, 29.74it/s] 31%|███       | 29/93 [00:00<00:01, 32.11it/s] 35%|███▌      | 33/93 [00:01<00:01, 33.88it/s] 40%|███▉      | 37/93 [00:01<00:01, 30.40it/s] 45%|████▌     | 42/93 [00:01<00:01, 33.35it/s] 51%|█████     | 47/93 [00:01<00:01, 35.77it/s] 55%|█████▍    | 51/93 [00:01<00:01, 31.96it/s] 59%|█████▉    | 55/93 [00:01<00:01, 31.18it/s] 63%|██████▎   | 59/93 [00:01<00:01, 23.77it/s] 67%|██████▋   | 62/93 [00:02<00:01, 23.91it/s] 70%|██████▉   | 65/93 [00:02<00:01, 20.62it/s] 75%|███████▌  | 70/93 [00:02<00:00, 25.87it/s] 80%|███████▉  | 74/93 [00:02<00:00, 28.76it/s] 84%|████████▍ | 78/93 [00:02<00:00, 26.65it/s] 89%|████████▉ | 83/93 [00:02<00:00, 31.62it/s] 94%|█████████▎| 87/93 [00:02<00:00, 30.71it/s] 98%|█████████▊| 91/93 [00:03<00:00, 25.76it/s]100%|██████████| 93/93 [00:03<00:00, 29.17it/s]
+loaded
+looking for tools
+  0%|          | 0/87 [00:00<?, ?it/s]100%|██████████| 87/87 [00:00<00:00, 12185.42it/s]
+['red hat', 'linux', 'apache', 'android', 'ubuntu', 'mysql', 'centos']
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'red hat', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+red hat False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'linux', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+linux False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'apache', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+apache False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'android', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+android False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'ubuntu', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+ubuntu True
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'mysql', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+None
+'NoneType' object has no attribute 'split'
+PL-TIC-1400-1700-004-Plan-Estrategico-Tecnologias-Informacion-PETI-2024.pdf
+Searching in 93
+Loading pdf file
+  0%|          | 0/93 [00:00<?, ?it/s]  3%|▎         | 3/93 [00:00<00:03, 29.66it/s]  6%|▋         | 6/93 [00:00<00:04, 17.76it/s] 12%|█▏        | 11/93 [00:00<00:03, 26.65it/s] 17%|█▋        | 16/93 [00:00<00:02, 31.55it/s] 23%|██▎       | 21/93 [00:00<00:02, 30.03it/s] 27%|██▋       | 25/93 [00:00<00:02, 31.68it/s] 31%|███       | 29/93 [00:00<00:01, 33.61it/s] 35%|███▌      | 33/93 [00:01<00:01, 30.18it/s] 40%|███▉      | 37/93 [00:01<00:01, 31.24it/s] 44%|████▍     | 41/93 [00:01<00:01, 32.47it/s] 48%|████▊     | 45/93 [00:01<00:01, 33.93it/s] 53%|█████▎    | 49/93 [00:01<00:01, 31.01it/s] 57%|█████▋    | 53/93 [00:01<00:01, 32.01it/s] 61%|██████▏   | 57/93 [00:01<00:01, 27.73it/s] 65%|██████▍   | 60/93 [00:02<00:01, 26.17it/s] 68%|██████▊   | 63/93 [00:02<00:01, 23.77it/s] 71%|███████   | 66/93 [00:02<00:01, 24.42it/s] 76%|███████▋  | 71/93 [00:02<00:00, 29.07it/s] 81%|████████  | 75/93 [00:02<00:00, 27.23it/s] 85%|████████▍ | 79/93 [00:02<00:00, 30.01it/s] 90%|█████████ | 84/93 [00:02<00:00, 34.29it/s] 95%|█████████▍| 88/93 [00:02<00:00, 31.05it/s] 99%|█████████▉| 92/93 [00:03<00:00, 31.66it/s]100%|██████████| 93/93 [00:03<00:00, 29.89it/s]
+loaded
+looking for tools
+  0%|          | 0/87 [00:00<?, ?it/s]100%|██████████| 87/87 [00:00<00:00, 11857.56it/s]
+['red hat', 'linux', 'apache', 'android', 'ubuntu', 'mysql', 'centos']
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'red hat', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+red hat False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'linux', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+linux True
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'apache', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+apache False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'android', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+android False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'ubuntu', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+ubuntu False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'mysql', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+Expecting value: line 1 column 1 (char 0)
+mysql False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'centos', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+mysql False
+From 2024-10-26T00:00:00.000 to 2024-11-25T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'centos', 'pubStartDate': '2024-10-26T00:00:00.000', 'pubEndDate': '2024-11-25T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+centos False
+pie chart
+centos False
+pie chart
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+test.pdf
+Searching in 1
+Loading pdf file
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 49.04it/s]
+loaded
+looking for tools
+  0%|          | 0/87 [00:00<?, ?it/s]100%|██████████| 87/87 [00:00<00:00, 178787.09it/s]
+['linux', 'python']
+From 2024-10-27T00:00:00.000 to 2024-11-26T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'linux', 'pubStartDate': '2024-10-27T00:00:00.000', 'pubEndDate': '2024-11-26T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+linux False
+From 2024-10-27T00:00:00.000 to 2024-11-26T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'python', 'pubStartDate': '2024-10-27T00:00:00.000', 'pubEndDate': '2024-11-26T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+python False
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+test.pdf
+Searching in 1
+Loading pdf file
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 27.33it/s]
+loaded
+looking for tools
+  0%|          | 0/87 [00:00<?, ?it/s]100%|██████████| 87/87 [00:00<00:00, 36844.15it/s]
+['linux', 'python']
+From 2024-11-02T00:00:00.000 to 2024-12-02T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'linux', 'pubStartDate': '2024-11-02T00:00:00.000', 'pubEndDate': '2024-12-02T00:00:00.000'}
+linux True
+From 2024-11-02T00:00:00.000 to 2024-12-02T00:00:00.000
+{'apiKey': '5eed3e72-24b3-43c0-918c-d96e711d1fa8'}
+{'startIndex': 0, 'keywordSearch': 'python', 'pubStartDate': '2024-11-02T00:00:00.000', 'pubEndDate': '2024-12-02T00:00:00.000'}
+Expecting value: line 1 column 1 (char 0)
+python False
+pie chart
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+None
+'NoneType' object has no attribute 'split'
+test.pdf
+Searching in 1
+Loading pdf file
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00, 161.90it/s]
+loaded
+looking for tools
+  0%|          | 0/87 [00:00<?, ?it/s]100%|██████████| 87/87 [00:00<00:00, 1036660.36it/s]
