@@ -55,7 +55,7 @@ def get_vulnerability(match_word,date_ini,date_end):
         res2 = requests.get(url,headers=headers, params=params).json()
         
         #print(res2)
-        outpu t= []
+        output= []
         for vulnerability in res2['vulnerabilities']:
             #if 
             outdict = {}
