@@ -47,7 +47,7 @@ Ensure you have Python installed on your system. You can download it from [pytho
    ``` 
 7. **Run the application**
    ```bash
-   python appen.py
+   python app.py
 
 
 Open your web browser and navigate to http://127.0.0.1:8050.
